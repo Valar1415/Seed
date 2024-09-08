@@ -6,6 +6,9 @@ var initManager = preload("res://Utility/Initiative Bar/InitiativeManager.tres")
 @onready var player = $Player
 
 # Chat
+@onready var send := %Send
+@onready var message := %Message
+@onready var chatbox := %Chatbox
 
 
 func _ready():
@@ -15,8 +18,7 @@ func _ready():
 	
 	player.connect("turn_end", Callable(self, "turn_end"))
 	
-	DiceRoll.roll("d6")
-	print(DiceRoll.roll("d6"))
+
 
 func ally_turn_start():
 	player.turn = true
@@ -25,12 +27,31 @@ func ally_turn_start():
 
 func enemy_turn_start():
 	print("enemy turn")
+	$Wolf.act()
 	turnManager.turn = TurnManager.ALLY_TURN
 
 func turn_end():
 	print("turn end")
 	player.turn = false
 	turnManager.turn = TurnManager.ENEMY_TURN
+
+
+func _on_send_pressed() -> void:
+	%Send.release_focus()
+	
+	if message.text != "":
+		chatbox.text += str("Knighter: ", message.text, "\n")
+		chatbox.scroll_vertical = chatbox.get_line_height()
+		roll_dice(message.text)
+		message.text = ""
+
+
+func roll_dice(dice):
+	var result = DiceRoll.roll(dice)
+	print(result)
+	if result != 0:
+		chatbox.text += str("Result = ", result, "\n")
+
 
 #func pass_initiative(init):
 	#
