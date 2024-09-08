@@ -1,0 +1,6 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://cyggdcfywrg3s"]
+
+[ext_resource type="Script" path="res://Utility/Initiative Bar/InitiativeManager.gd" id="1_piwm3"]
+
+[resource]
+script = ExtResource("1_piwm3")

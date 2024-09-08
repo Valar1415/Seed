@@ -18,7 +18,6 @@ func _input(event: InputEvent) -> void:
 		elif  event.is_action_pressed("ui_right"):
 			move(Vector2.RIGHT)
 	
-	
 
 func move(direction: Vector2):
 	var current_tile: Vector2i = tileMap_ground.local_to_map(global_position)

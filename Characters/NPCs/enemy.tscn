@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://bokv72bg2mrd1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tsq02"]
+size = Vector2(70, 70)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_fioy4"]
+size = Vector2(70, 70)
+
+[node name="Enemy" type="Area2D"]
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_tsq02")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("PlaceholderTexture2D_fioy4")

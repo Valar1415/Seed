@@ -15,6 +15,15 @@ run/main_scene="res://world.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+DiceRoll="*res://Utility/DiceRoll/DiceRoll.gd"
+
+[display]
+
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
 [input]
 
 ui_left={
@@ -54,3 +63,8 @@ ui_down={
 
 2d_physics/layer_1="player"
 2d_physics/layer_2="world"
+2d_physics/layer_3="Enemy"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b3442xm58r22h"
-path="res://.godot/imported/Knighter.png-d543d322bc2449be98f2182a3754e7f5.ctex"
+uid="uid://chsf6uoky73wj"
+path="res://.godot/imported/Circle.png-d8695ea1de9a6bf3a2c5210270632a6a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Characters/Knighter.png"
-dest_files=["res://.godot/imported/Knighter.png-d543d322bc2449be98f2182a3754e7f5.ctex"]
+source_file="res://Utility/Initiative Bar/Circle.png"
+dest_files=["res://.godot/imported/Circle.png-d8695ea1de9a6bf3a2c5210270632a6a.ctex"]
 
 [params]
 
