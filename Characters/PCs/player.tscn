@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://dtvrsm7py3m6y"]
+[gd_scene load_steps=5 format=3 uid="uid://dtvrsm7py3m6y"]
 
 [ext_resource type="Texture2D" uid="uid://b3442xm58r22h" path="res://Characters/PCs/Knighter.png" id="1_ccq13"]
 [ext_resource type="Script" path="res://Characters/PCs/player.gd" id="1_e5ccn"]
+[ext_resource type="Texture2D" uid="uid://xgnsofidqvkm" path="res://temp/Target.png" id="3_57v36"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vaaew"]
 size = Vector2(70, 70)
@@ -16,7 +17,18 @@ texture = ExtResource("1_ccq13")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_vaaew")
 
+[node name="RayCast2D" type="RayCast2D" parent="."]
+enabled = false
+collision_mask = 7
+collide_with_areas = true
+collide_with_bodies = false
+
 [node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="TargetIcon" type="Sprite2D" parent="."]
+visible = false
+top_level = true
+texture = ExtResource("3_57v36")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = 2
@@ -74,3 +86,8 @@ text = "Powerful Strike"
 
 [connection signal="pressed" from="CanvasLayer/EndTurnButton" to="." method="_on_end_turn_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Abilities/A1" to="." method="_on_a_1_pressed"]
+[connection signal="pressed" from="CanvasLayer/Abilities/A2" to="." method="_on_a_2_pressed"]
+[connection signal="pressed" from="CanvasLayer/Abilities/A3" to="." method="_on_a_3_pressed"]
+[connection signal="pressed" from="CanvasLayer/Abilities/A4" to="." method="_on_a_4_pressed"]
+[connection signal="pressed" from="CanvasLayer/Abilities/A5" to="." method="_on_a_5_pressed"]
+[connection signal="pressed" from="CanvasLayer/Abilities/A6" to="." method="_on_a_6_pressed"]
