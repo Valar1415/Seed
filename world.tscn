@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=4 uid="uid://5ssn378etleb"]
+[gd_scene load_steps=20 format=4 uid="uid://5ssn378etleb"]
 
 [ext_resource type="PackedScene" uid="uid://dtvrsm7py3m6y" path="res://Characters/PCs/player.tscn" id="1_8siv5"]
 [ext_resource type="TileSet" uid="uid://dhy45riix4ao6" path="res://Tile Sets/Ground.tres" id="1_33e52"]
@@ -6,11 +6,45 @@
 [ext_resource type="Script" path="res://world.gd" id="1_o32pj"]
 [ext_resource type="TileSet" uid="uid://bwdkad5r1bl6f" path="res://Tile Sets/Houses.tres" id="2_n4sac"]
 [ext_resource type="PackedScene" uid="uid://datrxqa6qokki" path="res://Characters/NPCs/wolf.tscn" id="5_8ysdf"]
+[ext_resource type="Script" path="res://npc.gd" id="6_ar6km"]
 [ext_resource type="Texture2D" uid="uid://b3442xm58r22h" path="res://Characters/PCs/Knighter.png" id="7_5dtii"]
+[ext_resource type="Texture2D" uid="uid://driexkj0o1kts" path="res://temp/NPC.png" id="7_xvyxg"]
 [ext_resource type="Texture2D" uid="uid://2dtig25mr8rl" path="res://Characters/NPCs/Wolf.png" id="8_g07uy"]
 [ext_resource type="Texture2D" uid="uid://chsf6uoky73wj" path="res://Utility/Initiative Bar/Circle.png" id="8_uvgr3"]
+[ext_resource type="Texture2D" uid="uid://cjd24kt8iifgi" path="res://temp/X.png" id="9_h8smv"]
 [ext_resource type="Texture2D" uid="uid://de6sqv73p5d2o" path="res://Utility/Initiative Bar/Line.png" id="10_e3rxe"]
 [ext_resource type="FontFile" uid="uid://cv44u08rsmf26" path="res://temp/Aleo-Black.ttf" id="11_8jqm7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ryv6h"]
+size = Vector2(70, 70)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b1c87"]
+bg_color = Color(0, 0, 0, 0.290196)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ysyy3"]
+bg_color = Color(0.486275, 0.768627, 0.541176, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yjtkx"]
+bg_color = Color(0, 0, 0, 0.290196)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l2a8i"]
+bg_color = Color(0.486275, 0.607843, 0.768627, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_o32pj")
@@ -35,6 +69,128 @@ metadata/_edit_lock_ = true
 
 [node name="Wolf" parent="." instance=ExtResource("5_8ysdf")]
 position = Vector2(315, 104)
+
+[node name="NPC" type="Area2D" parent="."]
+position = Vector2(453, 461)
+script = ExtResource("6_ar6km")
+
+[node name="Sprite2D" type="Sprite2D" parent="NPC"]
+texture = ExtResource("7_xvyxg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="NPC"]
+shape = SubResource("RectangleShape2D_ryv6h")
+
+[node name="Attributes" type="Control" parent="NPC"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -35.0
+offset_top = -35.0
+offset_right = 35.0
+offset_bottom = 35.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HealthBar" type="ProgressBar" parent="NPC/Attributes"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -35.0
+offset_top = -94.0
+offset_right = 35.0
+offset_bottom = -84.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_b1c87")
+theme_override_styles/fill = SubResource("StyleBoxFlat_ysyy3")
+max_value = 24.0
+step = 1.0
+value = 24.0
+show_percentage = false
+
+[node name="HealthLbl" type="Label" parent="NPC/Attributes/HealthBar"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -21.5
+offset_top = -11.5
+offset_right = 21.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("11_8jqm7")
+theme_override_font_sizes/font_size = 8
+text = "24/24"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ArmorBar" type="ProgressBar" parent="NPC/Attributes"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -35.0
+offset_top = -84.0
+offset_right = 35.0
+offset_bottom = -74.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_yjtkx")
+theme_override_styles/fill = SubResource("StyleBoxFlat_l2a8i")
+max_value = 1.0
+step = 1.0
+show_percentage = false
+
+[node name="ArmorLbl" type="Label" parent="NPC/Attributes/ArmorBar"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -21.5
+offset_top = -11.0
+offset_right = 21.5
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("11_8jqm7")
+theme_override_font_sizes/font_size = 8
+text = "0/0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DeathIcon" type="TextureRect" parent="NPC/Attributes"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -35.0
+offset_top = -35.0
+offset_right = 35.0
+offset_bottom = 35.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("9_h8smv")
 
 [node name="Player" parent="." instance=ExtResource("1_8siv5")]
 position = Vector2(333, 611)
@@ -90,10 +246,14 @@ texture = ExtResource("10_e3rxe")
 stretch_mode = 3
 
 [node name="PanelContainer" type="PanelContainer" parent="GUI"]
-offset_left = 24.0
-offset_top = 367.0
-offset_right = 219.0
-offset_bottom = 621.0
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -274.0
+offset_right = 216.0
+offset_bottom = -20.0
+grow_vertical = 0
 size_flags_horizontal = 0
 size_flags_vertical = 8
 
@@ -139,5 +299,3 @@ text = "SEND"
 [connection signal="focus_entered" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Message" to="Player" method="_on_message_focus_entered"]
 [connection signal="focus_exited" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Message" to="Player" method="_on_message_focus_exited"]
 [connection signal="pressed" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Send" to="." method="_on_send_pressed"]
-
-[editable path="Player"]

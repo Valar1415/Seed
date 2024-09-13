@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bq21xq0w1d2ul"]
+
+[ext_resource type="Texture2D" uid="uid://cjd24kt8iifgi" path="res://temp/X.png" id="1_4yu1m"]
+
+[node name="DebuffIcon" type="TextureRect"]
+custom_minimum_size = Vector2(18, 18)
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_4yu1m")
+expand_mode = 1
+stretch_mode = 4

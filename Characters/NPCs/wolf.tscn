@@ -45,7 +45,9 @@ texture = ExtResource("1_pv62c")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_ryv6h")
 
-[node name="Control" type="Control" parent="."]
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+
+[node name="Attributes" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -59,7 +61,7 @@ offset_bottom = 35.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HealthBar" type="ProgressBar" parent="Control"]
+[node name="HealthBar" type="ProgressBar" parent="Attributes"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 7
@@ -80,7 +82,7 @@ step = 1.0
 value = 24.0
 show_percentage = false
 
-[node name="HealthLbl" type="Label" parent="Control/HealthBar"]
+[node name="HealthLbl" type="Label" parent="Attributes/HealthBar"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -101,7 +103,7 @@ text = "24/24"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ArmorBar" type="ProgressBar" parent="Control"]
+[node name="ArmorBar" type="ProgressBar" parent="Attributes"]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -120,7 +122,7 @@ max_value = 1.0
 step = 1.0
 show_percentage = false
 
-[node name="ArmorLbl" type="Label" parent="Control/ArmorBar"]
+[node name="ArmorLbl" type="Label" parent="Attributes/ArmorBar"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -140,7 +142,7 @@ text = "0/0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DeathIcon" type="TextureRect" parent="Control"]
+[node name="DeathIcon" type="TextureRect" parent="Attributes"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
