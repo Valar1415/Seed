@@ -2,9 +2,9 @@ extends Area2D
 
 signal turn_end
 
-@onready var tile_map: Node2D = $"../TileMap"
-@onready var tileMap_ground: TileMapLayer = $"../TileMap/Ground"
-@onready var world = $".."
+@onready var tile_map: Node2D = $"../../TileMap"
+@onready var tileMap_ground: TileMapLayer = $"../../TileMap/Ground"
+@onready var world: Node2D = $"../.."
 @onready var target_icon: Sprite2D = $TargetIcon
 @onready var raycast: RayCast2D = $RayCast2D
 @onready var debuffIcon = preload("res://Utility/debuff_icon.tscn")

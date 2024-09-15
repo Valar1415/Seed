@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://datrxqa6qokki"]
+[gd_scene load_steps=12 format=3 uid="uid://datrxqa6qokki"]
 
 [ext_resource type="Script" path="res://Characters/NPCs/wolf.gd" id="1_hss73"]
 [ext_resource type="Texture2D" uid="uid://2dtig25mr8rl" path="res://Characters/NPCs/Wolf.png" id="1_pv62c"]
@@ -8,6 +8,9 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ryv6h"]
 size = Vector2(70, 70)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p6e4i"]
+size = Vector2(209, 209)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b1c87"]
 bg_color = Color(0, 0, 0, 0.290196)
@@ -38,6 +41,8 @@ corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
 [node name="Wolf" type="Area2D"]
+collision_layer = 4
+collision_mask = 7
 script = ExtResource("1_hss73")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -46,12 +51,15 @@ texture = ExtResource("1_pv62c")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_ryv6h")
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+[node name="Range" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 3
 
-[node name="RayCast2D" type="RayCast2D" parent="."]
-enabled = false
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Range"]
+shape = SubResource("RectangleShape2D_p6e4i")
 
 [node name="DebugIcon" type="Sprite2D" parent="."]
+visible = false
 top_level = true
 texture = ExtResource("3_yt5du")
 

@@ -1,6 +1,6 @@
 extends Area2D
 
-@onready var tile_map: TileMapLayer = $"../TileMap/Ground"
+@onready var tile_map: TileMapLayer = $"../../TileMap/Ground"
 
 @export var max_health := 24
 @export var health := 24
@@ -15,3 +15,4 @@ func take_damage(amount):
 	%HealthLbl.text = str(health, "/", max_health)
 	if health <= 0:
 		%DeathIcon.show()
+		add_to_group("dead")

@@ -3,7 +3,7 @@ extends Node2D
 var turnManager = preload("res://Utility/TurnManager/TurnManager.tres")
 var initManager = preload("res://Utility/Initiative Bar/InitiativeManager.tres")
 
-@onready var player = $Player
+@onready var player: Area2D = $Allies/Player
 
 # Chat
 @onready var send := %Send
@@ -29,8 +29,9 @@ func ally_turn_start():
 
 func enemy_turn_start():
 	print("enemy turn")
-	$Wolf.movement = 2
-	$Wolf.act()
+	$Enemies/Wolf.movement = 2
+	$Enemies/Wolf.rolls = 1
+	$Enemies/Wolf.act()
 	turnManager.turn = TurnManager.ALLY_TURN
 
 func turn_end():

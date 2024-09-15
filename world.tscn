@@ -50,9 +50,6 @@ corner_radius_bottom_left = 4
 [node name="World" type="Node2D"]
 script = ExtResource("1_o32pj")
 
-[node name="TileMap2" type="TileMap" parent="."]
-format = 2
-
 [node name="TileMap" type="Node2D" parent="."]
 script = ExtResource("2_ovv0h")
 
@@ -70,20 +67,24 @@ metadata/_edit_lock_ = true
 tile_map_data = PackedByteArray("AAAHAAcAAAAAAAAAAAAHAAQAAAAAAAAAAAABAAYAAAAAAAAAAAACAAcAAAAAAAAAAAAEAAQAAAAAAAAAAAACAAIAAAAAAAAAAAACAAEAAAAAAAAAAAABAAEAAAAAAAAAAAA=")
 tile_set = ExtResource("2_n4sac")
 
-[node name="Wolf" parent="." instance=ExtResource("5_8ysdf")]
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Wolf" parent="Enemies" instance=ExtResource("5_8ysdf")]
 position = Vector2(315, 104)
 
-[node name="NPC" type="Area2D" parent="."]
+[node name="Allies" type="Node2D" parent="."]
+
+[node name="NPC" type="Area2D" parent="Allies"]
 position = Vector2(453, 461)
 script = ExtResource("6_ar6km")
 
-[node name="Sprite2D" type="Sprite2D" parent="NPC"]
+[node name="Sprite2D" type="Sprite2D" parent="Allies/NPC"]
 texture = ExtResource("7_xvyxg")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="NPC"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Allies/NPC"]
 shape = SubResource("RectangleShape2D_ryv6h")
 
-[node name="Attributes" type="Control" parent="NPC"]
+[node name="Attributes" type="Control" parent="Allies/NPC"]
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -97,7 +98,7 @@ offset_bottom = 35.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HealthBar" type="ProgressBar" parent="NPC/Attributes"]
+[node name="HealthBar" type="ProgressBar" parent="Allies/NPC/Attributes"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 7
@@ -118,7 +119,7 @@ step = 1.0
 value = 24.0
 show_percentage = false
 
-[node name="HealthLbl" type="Label" parent="NPC/Attributes/HealthBar"]
+[node name="HealthLbl" type="Label" parent="Allies/NPC/Attributes/HealthBar"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -139,7 +140,7 @@ text = "24/24"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ArmorBar" type="ProgressBar" parent="NPC/Attributes"]
+[node name="ArmorBar" type="ProgressBar" parent="Allies/NPC/Attributes"]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -158,7 +159,7 @@ max_value = 1.0
 step = 1.0
 show_percentage = false
 
-[node name="ArmorLbl" type="Label" parent="NPC/Attributes/ArmorBar"]
+[node name="ArmorLbl" type="Label" parent="Allies/NPC/Attributes/ArmorBar"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -178,7 +179,7 @@ text = "0/0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DeathIcon" type="TextureRect" parent="NPC/Attributes"]
+[node name="DeathIcon" type="TextureRect" parent="Allies/NPC/Attributes"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -195,7 +196,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("9_h8smv")
 
-[node name="Player" parent="." instance=ExtResource("1_8siv5")]
+[node name="Player" parent="Allies" instance=ExtResource("1_8siv5")]
 position = Vector2(333, 611)
 
 [node name="GUI" type="CanvasLayer" parent="."]
@@ -299,6 +300,6 @@ theme_override_fonts/font = ExtResource("11_8jqm7")
 theme_override_font_sizes/font_size = 16
 text = "SEND"
 
-[connection signal="focus_entered" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Message" to="Player" method="_on_message_focus_entered"]
-[connection signal="focus_exited" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Message" to="Player" method="_on_message_focus_exited"]
+[connection signal="focus_entered" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Message" to="Allies/Player" method="_on_message_focus_entered"]
+[connection signal="focus_exited" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Message" to="Allies/Player" method="_on_message_focus_exited"]
 [connection signal="pressed" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Send" to="." method="_on_send_pressed"]

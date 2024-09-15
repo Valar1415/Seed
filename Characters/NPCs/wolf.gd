@@ -2,19 +2,22 @@ extends Area2D
 
 
 # Get nodes
-@onready var tile_map: Node2D = $"../TileMap"
-@onready var tileMap_ground: TileMapLayer = $"../TileMap/Ground"
-@onready var player: Area2D = $"../Player"
+@onready var tile_map: Node2D = $"../../TileMap"
+@onready var tileMap_ground: TileMapLayer = $"../../TileMap/Ground"
+@onready var player: Area2D = $"../../Allies/Player"
+@onready var range: Area2D = $Range
+@onready var allies: Node2D = $"../../Allies"
 
 # Attack
-@onready var raycast: RayCast2D = $RayCast2D
+var atk_targets: Array = []
 
 # Attributes
 @export var max_health := 24
 @export var health := 24
 @export var movement := 2
+@export var rolls := 1
 
-var current_path: Array[Vector2i]
+var path: Array[Vector2i]
 
 func _ready():
 	var closest_tile = tileMap_ground.local_to_map(global_position)
@@ -24,7 +27,7 @@ func _ready():
 #func _unhandled_input(event: InputEvent) -> void: # DEBUG
 	#if event.is_action_pressed("DEBUG_K"):
 		#print("wolf move")
-		#current_path = tile_map.astar.get_id_path(
+		#path = tile_map.astar.get_id_path(
 			#tile_map.ground.local_to_map(global_position), 
 			#tile_map.ground.local_to_map(player.position)
 		#).slice(1) # Ignore first tile 
@@ -32,29 +35,90 @@ func _ready():
 		#act()
 
 func act():
-	get_path_to_target()
-	if current_path.is_empty():
+	var target = pick_target()
+	print(target)
+	get_path_to_target(target)
+	if path.is_empty():
 		return
 	
-	raycast.enabled = true
+	check_atk_targets_in_range()
+	if atk_targets.is_empty():
+		move()
+	else:
+		attack(target)
 	
+
+func attack(target_enemy):
+	while rolls > 0:
+		var rolled_ability = DiceRoll.roll("1d6")
+		match rolled_ability:
+			1,2,3:
+				var damage = DiceRoll.roll("1d12")
+				if target_enemy != null:
+					target_enemy.take_damage(damage)
+			4,5:
+				var damage = DiceRoll.roll("1d6 + 1d4")
+				if target_enemy != null:
+					target_enemy.take_damage(damage)
+			6:
+				var damage = DiceRoll.roll("3d6")
+				if target_enemy != null:
+					target_enemy.take_damage(damage)
+		rolls -= 1
+		atk_targets.clear()
+		check_atk_targets_in_range()
+		await get_tree().create_timer(0.5).timeout
+	
+
+func move():
 	while movement > 0:
-		var target_pos = tile_map.ground.map_to_local(current_path.front()) # For movement
-		var second_pos = tile_map.ground.map_to_local(current_path[1]) # For attacks
+		if path.size() == 1:
+			break
+		var target_pos = tile_map.ground.map_to_local(path.front()) # For movement
 		
 		global_position = target_pos # Move Wolf
-		$DebugIcon.global_position = second_pos
-		
-		raycast.target_position = to_local(second_pos) # Target position for raycast
 		
 		
 		await get_tree().create_timer(0.5).timeout
 		
 		if global_position == target_pos:
-			current_path.pop_front()
+			path.pop_front()
 			movement -= 1
+	path.clear()
+
+func check_atk_targets_in_range():
+	var areas = range.get_overlapping_areas()
+	if areas.is_empty():
+		return
 	
-	raycast.enabled = false
+	for area in areas:
+		if area.is_in_group("dead"):
+			pass
+		else:
+			atk_targets.append(area)
+
+
+func pick_target():
+	var closest_target = null
+	var closest_distance = INF  # Start with a very large number for comparison
+	
+	#var allies = get_tree().get_nodes_in_group("allies")  # Get all allies in the group
+	for ally in allies.get_children():
+		if not ally.is_in_group("dead"):
+			var distance = global_position.distance_to(ally.global_position)
+			
+			if distance < closest_distance:  # Compare current ally's distance
+				closest_distance = distance  # Update closest distance
+				closest_target = ally          # Set this ally as the closest one
+	
+	return closest_target  # Return the closest ally
+
+func get_path_to_target(target):
+	path = tile_map.astar.get_id_path(
+		tile_map.ground.local_to_map(global_position), 
+		tile_map.ground.local_to_map(target.position)
+	).slice(1) # Ignore first tile 
+
 
 #func act()->void:
 	  #if bSawPlayer:
@@ -81,8 +145,17 @@ func take_damage(amount):
 	if health <= 0:
 		%DeathIcon.show()
 
-func get_path_to_target():
-	current_path = tile_map.astar.get_id_path(
-		tile_map.ground.local_to_map(global_position), 
-		tile_map.ground.local_to_map(player.position)
-	).slice(1) # Ignore first tile 
+
+
+## OVO JE BILO ZA RAYCASTTRACKING MOVEMENT
+#var second_pos = tile_map.ground.map_to_local(path[1]) # For attacks
+#raycast.target_position = to_local(second_pos) # Target position for raycast
+#$DebugIcon.global_position = second_pos
+	#raycast.enabled = true
+	#
+	#if raycast.is_colliding(): # Check for valid attack target
+		#var target = raycast.get_collider()
+		#attack(target.position)
+		#print("hello?")
+		#return
+	#raycast.enabled = false
