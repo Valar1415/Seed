@@ -1,8 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://dtvrsm7py3m6y"]
+[gd_scene load_steps=13 format=3 uid="uid://dtvrsm7py3m6y"]
 
 [ext_resource type="Texture2D" uid="uid://b3442xm58r22h" path="res://Characters/PCs/Knighter.png" id="1_ccq13"]
 [ext_resource type="Script" path="res://Characters/PCs/player.gd" id="1_e5ccn"]
 [ext_resource type="Texture2D" uid="uid://xgnsofidqvkm" path="res://temp/Target.png" id="3_57v36"]
+[ext_resource type="Script" path="res://Characters/PCs/camera_2d.gd" id="3_au01q"]
 [ext_resource type="FontFile" uid="uid://cv44u08rsmf26" path="res://temp/Aleo-Black.ttf" id="4_8d8qb"]
 [ext_resource type="Texture2D" uid="uid://cjd24kt8iifgi" path="res://temp/X.png" id="5_m0ooc"]
 [ext_resource type="Texture2D" uid="uid://cgrgwkn0bil3o" path="res://temp/Knighter_Portrait.png" id="6_7wpbj"]
@@ -57,11 +58,126 @@ collide_with_bodies = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
 top_level = true
+script = ExtResource("3_au01q")
 
 [node name="TargetIcon" type="Sprite2D" parent="."]
 visible = false
 top_level = true
 texture = ExtResource("3_57v36")
+
+[node name="Attributes" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -35.0
+offset_top = -35.0
+offset_right = 35.0
+offset_bottom = 35.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="HealthBar" type="ProgressBar" parent="Attributes"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -35.0
+offset_top = -94.0
+offset_right = 35.0
+offset_bottom = -84.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_ewso1")
+theme_override_styles/fill = SubResource("StyleBoxFlat_8qa81")
+step = 1.0
+value = 100.0
+show_percentage = false
+
+[node name="HealthLbl" type="Label" parent="Attributes/HealthBar"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -21.5
+offset_top = -11.5
+offset_right = 21.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("4_8d8qb")
+theme_override_font_sizes/font_size = 8
+text = "100/100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ArmorBar" type="ProgressBar" parent="Attributes"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -35.0
+offset_top = -84.0
+offset_right = 35.0
+offset_bottom = -74.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_gcc4i")
+theme_override_styles/fill = SubResource("StyleBoxFlat_6vsbn")
+max_value = 15.0
+step = 1.0
+show_percentage = false
+
+[node name="ArmorLbl" type="Label" parent="Attributes/ArmorBar"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -21.5
+offset_top = -11.0
+offset_right = 21.5
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("4_8d8qb")
+theme_override_font_sizes/font_size = 8
+text = "0/15"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DeathIcon" type="TextureRect" parent="Attributes"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -35.0
+offset_top = -35.0
+offset_right = 35.0
+offset_bottom = 35.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_m0ooc")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = 2
@@ -116,119 +232,6 @@ text = "Defense Up"
 [node name="A6" type="Button" parent="CanvasLayer/Abilities"]
 layout_mode = 2
 text = "Powerful Strike"
-
-[node name="Attributes" type="Control" parent="CanvasLayer"]
-layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -35.0
-offset_top = -35.0
-offset_right = 35.0
-offset_bottom = 35.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HealthBar" type="ProgressBar" parent="CanvasLayer/Attributes"]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -35.0
-offset_top = -94.0
-offset_right = 35.0
-offset_bottom = -84.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_styles/background = SubResource("StyleBoxFlat_ewso1")
-theme_override_styles/fill = SubResource("StyleBoxFlat_8qa81")
-step = 1.0
-value = 100.0
-show_percentage = false
-
-[node name="HealthLbl" type="Label" parent="CanvasLayer/Attributes/HealthBar"]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -21.5
-offset_top = -11.5
-offset_right = 21.5
-offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("4_8d8qb")
-theme_override_font_sizes/font_size = 8
-text = "100/100"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ArmorBar" type="ProgressBar" parent="CanvasLayer/Attributes"]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -35.0
-offset_top = -84.0
-offset_right = 35.0
-offset_bottom = -74.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_styles/background = SubResource("StyleBoxFlat_gcc4i")
-theme_override_styles/fill = SubResource("StyleBoxFlat_6vsbn")
-max_value = 15.0
-step = 1.0
-show_percentage = false
-
-[node name="ArmorLbl" type="Label" parent="CanvasLayer/Attributes/ArmorBar"]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -21.5
-offset_top = -11.0
-offset_right = 21.5
-offset_bottom = 12.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("4_8d8qb")
-theme_override_font_sizes/font_size = 8
-text = "0/15"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="DeathIcon" type="TextureRect" parent="CanvasLayer/Attributes"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -35.0
-offset_top = -35.0
-offset_right = 35.0
-offset_bottom = 35.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("5_m0ooc")
 
 [node name="Rolls&Movement" type="PanelContainer" parent="CanvasLayer"]
 anchors_preset = 1

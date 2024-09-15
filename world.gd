@@ -29,6 +29,7 @@ func ally_turn_start():
 
 func enemy_turn_start():
 	print("enemy turn")
+	$Wolf.movement = 2
 	$Wolf.act()
 	turnManager.turn = TurnManager.ALLY_TURN
 

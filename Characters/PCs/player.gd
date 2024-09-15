@@ -66,7 +66,7 @@ func _input_event(viewport, event, shape_idx): # Mouse Drag&Drop
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			is_dragging = true
-			print("Mouse button pressed on player")
+			#print("Mouse button pressed on player")
 
 	
 	if event is InputEventMouseButton and not event.pressed:
@@ -74,42 +74,42 @@ func _input_event(viewport, event, shape_idx): # Mouse Drag&Drop
 			is_dragging = false
 			snap_to_nearest_tile()
 
-#func _input(event: InputEvent) -> void:
-	#if turn and chat_inactive and movement:
-		#if event.is_action_pressed("ui_up"):
-			#move(Vector2.UP)
-		#elif event.is_action_pressed("ui_down"):
-			#move(Vector2.DOWN)
-		#elif event.is_action_pressed("ui_left"):
-			#move(Vector2.LEFT)
-		#elif  event.is_action_pressed("ui_right"):
-			#move(Vector2.RIGHT)
-	#
-	#if event.is_action_pressed("ui_accept"): # Enter
-		#world._on_send_pressed()
-	#
-	#if (event is InputEventMouseButton) and event.pressed: # Release focus from chat
-		#var evLocal = make_input_local(event)
-		#if !Rect2(Vector2(0,0), %Message.get_size()).has_point(evLocal.position):
-			#%Message.release_focus()
-		#
-		#if targeting_active:
-			## Calculate the mouse position in the TileMap's local space
-			#var mouse_pos = get_global_mouse_position()
-			#var mouse_local_pos = tileMap_ground.to_local(mouse_pos)
-			#var tile_pos = tileMap_ground.local_to_map(mouse_local_pos)
-			#
-			## Execute the ability with the target tile position
-			#var target_pos = Vector2(tile_pos.x, tile_pos.y)
-			#var target_enemy = raycast.get_collider()
-			#
-			#if rolls > 0:
-				#execute_ability(current_ability, target_pos, target_enemy)
-			#
-			## Deactivate targeting
-			#targeting_active = false
-			#target_icon.visible = false
-			#raycast.enabled = false
+func _input(event: InputEvent) -> void:
+	if turn and chat_inactive and movement:
+		if event.is_action_pressed("ui_up"):
+			move(Vector2.UP)
+		elif event.is_action_pressed("ui_down"):
+			move(Vector2.DOWN)
+		elif event.is_action_pressed("ui_left"):
+			move(Vector2.LEFT)
+		elif  event.is_action_pressed("ui_right"):
+			move(Vector2.RIGHT)
+	
+	if event.is_action_pressed("ui_accept"): # Enter
+		world._on_send_pressed()
+	
+	if (event is InputEventMouseButton) and event.pressed: # Release focus from chat
+		var evLocal = make_input_local(event)
+		if !Rect2(Vector2(0,0), %Message.get_size()).has_point(evLocal.position):
+			%Message.release_focus()
+		
+		if targeting_active:
+			# Calculate the mouse position in the TileMap's local space
+			var mouse_pos = get_global_mouse_position()
+			var mouse_local_pos = tileMap_ground.to_local(mouse_pos)
+			var tile_pos = tileMap_ground.local_to_map(mouse_local_pos)
+			
+			# Execute the ability with the target tile position
+			var target_pos = Vector2(tile_pos.x, tile_pos.y)
+			var target_enemy = raycast.get_collider()
+			
+			if rolls > 0:
+				execute_ability(current_ability, target_pos, target_enemy)
+			
+			# Deactivate targeting
+			targeting_active = false
+			target_icon.visible = false
+			raycast.enabled = false
 
 func move(direction: Vector2):
 	var current_tile: Vector2i = tileMap_ground.local_to_map(global_position)
