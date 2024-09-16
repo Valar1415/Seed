@@ -183,6 +183,7 @@ texture = ExtResource("5_m0ooc")
 layer = 2
 
 [node name="EndTurnButton" type="Button" parent="CanvasLayer"]
+unique_name_in_owner = true
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0

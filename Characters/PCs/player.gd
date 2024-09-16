@@ -8,6 +8,7 @@ signal turn_end
 @onready var target_icon: Sprite2D = $TargetIcon
 @onready var raycast: RayCast2D = $RayCast2D
 @onready var debuffIcon = preload("res://Utility/debuff_icon.tscn")
+@onready var end_turn_button: Button = %EndTurnButton
 
 ## MOUSE DRAG
 var is_dragging = false
@@ -173,6 +174,7 @@ func snap_to_nearest_tile():
 	global_position = tileMap_ground.map_to_local(closest_tile)
 
 func _on_end_turn_button_pressed() -> void:
+	end_turn_button.disabled = true
 	emit_signal("turn_end")
 
 func _on_message_focus_entered() -> void:

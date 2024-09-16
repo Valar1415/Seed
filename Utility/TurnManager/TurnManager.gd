@@ -1,3 +1,4 @@
+#https://www.youtube.com/watch?v=umC2i8jwUKM
 extends Resource
 class_name TurnManager
 

@@ -24,6 +24,7 @@ func ally_turn_start():
 	player.turn = true
 	player.movement = 1
 	player.rolls = 1
+	player.end_turn_button.disabled = false
 	print("ally turn")
 	
 
@@ -32,6 +33,7 @@ func enemy_turn_start():
 	$Enemies/Wolf.movement = 2
 	$Enemies/Wolf.rolls = 1
 	$Enemies/Wolf.act()
+	await $Enemies/Wolf.enemy_turn_finished # REPLACE WOLF WITH ENEMY
 	turnManager.turn = TurnManager.ALLY_TURN
 
 func turn_end():

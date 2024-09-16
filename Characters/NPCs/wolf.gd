@@ -1,5 +1,6 @@
 extends Area2D
 
+signal enemy_turn_finished
 
 # Get nodes
 @onready var tile_map: Node2D = $"../../TileMap"
@@ -36,7 +37,7 @@ func _ready():
 
 func act():
 	var target = pick_target()
-	print(target)
+	print_rich("[color=red][b]%s:[/b][/color] %s" % ["Enemy target", target.name])
 	get_path_to_target(target)
 	if path.is_empty():
 		return
@@ -44,8 +45,19 @@ func act():
 	check_atk_targets_in_range()
 	if atk_targets.is_empty():
 		move()
+		if path.is_empty():
+			print(path)
+		if path.size() == 0:
+			atk_targets.clear()
+			check_atk_targets_in_range()
+			if !atk_targets.is_empty(): # If found target, attack
+				attack(target)
 	else:
 		attack(target)
+	
+	
+	await get_tree().create_timer(1.5).timeout
+	emit_signal("enemy_turn_finished")
 	
 
 func attack(target_enemy):
@@ -84,7 +96,7 @@ func move():
 		if global_position == target_pos:
 			path.pop_front()
 			movement -= 1
-	path.clear()
+
 
 func check_atk_targets_in_range():
 	var areas = range.get_overlapping_areas()

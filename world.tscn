@@ -1,13 +1,14 @@
-[gd_scene load_steps=21 format=4 uid="uid://5ssn378etleb"]
+[gd_scene load_steps=22 format=4 uid="uid://5ssn378etleb"]
 
 [ext_resource type="PackedScene" uid="uid://dtvrsm7py3m6y" path="res://Characters/PCs/player.tscn" id="1_8siv5"]
 [ext_resource type="TileSet" uid="uid://dhy45riix4ao6" path="res://Tile Sets/Ground.tres" id="1_33e52"]
 [ext_resource type="TileSet" uid="uid://dmji8m5imu7ws" path="res://Tile Sets/Bounds.tres" id="1_douwk"]
 [ext_resource type="Script" path="res://world.gd" id="1_o32pj"]
+[ext_resource type="Script" path="res://temp/path_debug.gd" id="2_ff5n6"]
 [ext_resource type="TileSet" uid="uid://bwdkad5r1bl6f" path="res://Tile Sets/Houses.tres" id="2_n4sac"]
 [ext_resource type="Script" path="res://AStar_Pathfinding.gd" id="2_ovv0h"]
 [ext_resource type="PackedScene" uid="uid://datrxqa6qokki" path="res://Characters/NPCs/wolf.tscn" id="5_8ysdf"]
-[ext_resource type="Script" path="res://npc.gd" id="6_ar6km"]
+[ext_resource type="Script" path="res://temp/npc.gd" id="6_ar6km"]
 [ext_resource type="Texture2D" uid="uid://b3442xm58r22h" path="res://Characters/PCs/Knighter.png" id="7_5dtii"]
 [ext_resource type="Texture2D" uid="uid://driexkj0o1kts" path="res://temp/NPC.png" id="7_xvyxg"]
 [ext_resource type="Texture2D" uid="uid://2dtig25mr8rl" path="res://Characters/NPCs/Wolf.png" id="8_g07uy"]
@@ -49,6 +50,9 @@ corner_radius_bottom_left = 4
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_o32pj")
+
+[node name="PathDebug" type="Line2D" parent="."]
+script = ExtResource("2_ff5n6")
 
 [node name="TileMap" type="Node2D" parent="."]
 script = ExtResource("2_ovv0h")
