@@ -200,11 +200,21 @@ func gain_armor(amount):
 	%ArmorLbl.text = str(armor, "/", max_armor)
 
 func take_damage(amount):
-	health -= amount
+	if armor > 0:
+		var damage_to_armor = min(amount, armor)  # Reduce only the amount available in armor
+		armor -= damage_to_armor
+		amount -= damage_to_armor
+	
+	if amount > 0:
+		health -= amount
+	
 	if health <= 0:
+		health = 0
 		%DeathIcon.show()
 	%HealthBar.value = health
 	%HealthLbl.text = str(health, "/", max_health)
+	%ArmorBar.value = armor
+	%ArmorLbl.text = str(armor, "/", max_armor)
 
 #func update_rolls():
 	#

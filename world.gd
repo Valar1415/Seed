@@ -3,7 +3,10 @@ extends Node2D
 var turnManager = preload("res://Utility/TurnManager/TurnManager.tres")
 var initManager = preload("res://Utility/Initiative Bar/InitiativeManager.tres")
 
+# Characters
 @onready var player: Area2D = $Allies/Player
+@onready var enemies_node: Node2D = $Enemies
+
 
 # Chat
 @onready var send := %Send
@@ -30,10 +33,12 @@ func ally_turn_start():
 
 func enemy_turn_start():
 	print("enemy turn")
-	$Enemies/Wolf.movement = 2
-	$Enemies/Wolf.rolls = 1
-	$Enemies/Wolf.act()
-	await $Enemies/Wolf.enemy_turn_finished # REPLACE WOLF WITH ENEMY
+	var enemies = enemies_node.get_children()
+	for enemy in enemies:
+		enemy.movement = 2
+		enemy.rolls = 1
+		enemy.act()
+		await enemy.enemy_turn_finished
 	turnManager.turn = TurnManager.ALLY_TURN
 
 func turn_end():

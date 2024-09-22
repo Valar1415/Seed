@@ -13,17 +13,23 @@ signal enemy_turn_finished
 var atk_targets: Array = []
 
 # Attributes
+const BASE_MOVEMENT := 2
 @export var max_health := 24
 @export var health := 24
 @export var movement := 2
 @export var rolls := 1
+@export var max_armor: int = 15
+@export var armor: int = 0
 
+# Pathfinding
+@onready var astar = tile_map.astar
+#var astar = tile_map.astar
 var path: Array[Vector2i]
 
 func _ready():
 	var closest_tile = tileMap_ground.local_to_map(global_position)
 	global_position = tileMap_ground.map_to_local(closest_tile)
-	
+	set_tilemap_obstacle(true)
 
 #func _unhandled_input(event: InputEvent) -> void: # DEBUG
 	#if event.is_action_pressed("DEBUG_K"):
@@ -36,27 +42,35 @@ func _ready():
 		#act()
 
 func act():
+	set_tilemap_obstacle(false)
 	var target = pick_target()
 	print_rich("[color=red][b]%s:[/b][/color] %s" % ["Enemy target", target.name])
 	get_path_to_target(target)
-	if path.is_empty():
+	if path.is_empty(): # Do nothing if target inaccessible
 		return
 	
+	
+	atk_targets.clear()
 	check_atk_targets_in_range()
 	if atk_targets.is_empty():
-		move()
-		if path.is_empty():
-			print(path)
-		if path.size() == 0:
-			atk_targets.clear()
-			check_atk_targets_in_range()
-			if !atk_targets.is_empty(): # If found target, attack
-				attack(target)
+		await move()
+		
+		atk_targets.clear()
+		check_atk_targets_in_range()
+		if !atk_targets.is_empty(): # If found target, attack
+			await rotate_towards_target(target.global_position)
+			attack(target)
+		else: # Use roll for movement
+			movement = BASE_MOVEMENT
+			rolls = 0
+			await move()
 	else:
+		await rotate_towards_target(target.global_position)
 		attack(target)
 	
 	
-	await get_tree().create_timer(1.5).timeout
+	await get_tree().create_timer(2).timeout
+	set_tilemap_obstacle(true)
 	emit_signal("enemy_turn_finished")
 	
 
@@ -109,7 +123,6 @@ func check_atk_targets_in_range():
 		else:
 			atk_targets.append(area)
 
-
 func pick_target():
 	var closest_target = null
 	var closest_distance = INF  # Start with a very large number for comparison
@@ -124,6 +137,11 @@ func pick_target():
 				closest_target = ally          # Set this ally as the closest one
 	
 	return closest_target  # Return the closest ally
+
+func rotate_towards_target(target):
+	self.look_at(target)
+	rotation += deg_to_rad(-90)
+	await get_tree().create_timer(0.5).timeout
 
 func get_path_to_target(target):
 	path = tile_map.astar.get_id_path(
@@ -151,11 +169,21 @@ func get_path_to_target(target):
 	#position += Vector2.DOWN * 70
 
 func take_damage(amount):
-	health -= amount
+	if armor > 0:
+		var damage_to_armor = min(amount, armor)  # Reduce only the amount available in armor
+		armor -= damage_to_armor
+		amount -= damage_to_armor
+	
+	if amount > 0:
+		health -= amount
+	
+	if health <= 0:
+		health = 0
+		%DeathIcon.show()
 	%HealthBar.value = health
 	%HealthLbl.text = str(health, "/", max_health)
-	if health <= 0:
-		%DeathIcon.show()
+	%ArmorBar.value = armor
+	%ArmorLbl.text = str(armor, "/", max_armor)
 
 
 
@@ -171,3 +199,7 @@ func take_damage(amount):
 		#print("hello?")
 		#return
 	#raycast.enabled = false
+
+func set_tilemap_obstacle(value):
+	var current_position = tileMap_ground.local_to_map(global_position)
+	astar.set_point_solid(current_position, value)

@@ -1,17 +1,12 @@
-[gd_scene load_steps=13 format=3 uid="uid://datrxqa6qokki"]
+[gd_scene load_steps=10 format=3 uid="uid://bebcs2jivdy82"]
 
-[ext_resource type="Script" path="res://Characters/NPCs/wolf.gd" id="1_hss73"]
-[ext_resource type="Texture2D" uid="uid://2dtig25mr8rl" path="res://Characters/NPCs/Wolf.png" id="1_pv62c"]
-[ext_resource type="FontFile" uid="uid://cv44u08rsmf26" path="res://temp/Aleo-Black.ttf" id="3_5j0x8"]
-[ext_resource type="Texture2D" uid="uid://xgnsofidqvkm" path="res://temp/Target.png" id="3_yt5du"]
-[ext_resource type="Texture2D" uid="uid://cjd24kt8iifgi" path="res://temp/X.png" id="4_ijghc"]
-[ext_resource type="Script" path="res://Characters/NPCs/attributes.gd" id="4_pe0uw"]
+[ext_resource type="Script" path="res://temp/npc.gd" id="1_k8hye"]
+[ext_resource type="Texture2D" uid="uid://driexkj0o1kts" path="res://temp/NPC.png" id="2_o5rek"]
+[ext_resource type="FontFile" uid="uid://cv44u08rsmf26" path="res://temp/Aleo-Black.ttf" id="3_qkdx5"]
+[ext_resource type="Texture2D" uid="uid://cjd24kt8iifgi" path="res://temp/X.png" id="4_1pjxy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ryv6h"]
 size = Vector2(70, 70)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_p6e4i"]
-size = Vector2(209, 209)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b1c87"]
 bg_color = Color(0, 0, 0, 0.290196)
@@ -41,31 +36,17 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="Wolf" type="Area2D"]
-collision_layer = 4
-collision_mask = 7
-script = ExtResource("1_hss73")
+[node name="NPC" type="Area2D"]
+position = Vector2(463, 525)
+script = ExtResource("1_k8hye")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_pv62c")
+texture = ExtResource("2_o5rek")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_ryv6h")
 
-[node name="Range" type="Area2D" parent="."]
-collision_layer = 0
-collision_mask = 3
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Range"]
-shape = SubResource("RectangleShape2D_p6e4i")
-
-[node name="DebugIcon" type="Sprite2D" parent="."]
-visible = false
-top_level = true
-texture = ExtResource("3_yt5du")
-
 [node name="Attributes" type="Control" parent="."]
-top_level = true
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -78,10 +59,6 @@ offset_right = 35.0
 offset_bottom = 35.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(35, 35)
-size_flags_horizontal = 4
-size_flags_vertical = 4
-script = ExtResource("4_pe0uw")
 
 [node name="HealthBar" type="ProgressBar" parent="Attributes"]
 unique_name_in_owner = true
@@ -119,14 +96,13 @@ offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("3_5j0x8")
+theme_override_fonts/font = ExtResource("3_qkdx5")
 theme_override_font_sizes/font_size = 8
 text = "24/24"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ArmorBar" type="ProgressBar" parent="Attributes"]
-unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -146,7 +122,6 @@ step = 1.0
 show_percentage = false
 
 [node name="ArmorLbl" type="Label" parent="Attributes/ArmorBar"]
-unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -160,7 +135,7 @@ offset_bottom = 12.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("3_5j0x8")
+theme_override_fonts/font = ExtResource("3_qkdx5")
 theme_override_font_sizes/font_size = 8
 text = "0/0"
 horizontal_alignment = 1
@@ -181,4 +156,4 @@ offset_right = 35.0
 offset_bottom = 35.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("4_ijghc")
+texture = ExtResource("4_1pjxy")
