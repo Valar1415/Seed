@@ -25,6 +25,7 @@ var rolls: int = 1:
 		rolls = value
 		%Rolls.text = str("Rolls: ", value)
 
+var initiative := "1d600"
 var max_health: int = 100
 var health: int = 100
 var max_armor: int = 15

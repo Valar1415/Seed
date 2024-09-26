@@ -2,6 +2,7 @@ extends Area2D
 
 @onready var tile_map: TileMapLayer = $"../../TileMap/Ground"
 
+@export var initiative := "1d20"
 @export var max_health := 24
 @export var health := 24
 

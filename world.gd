@@ -20,7 +20,6 @@ func _ready():
 	turnManager.connect("enemy_turn_started", Callable(self, "enemy_turn_start"))
 	
 	player.connect("turn_end", Callable(self, "turn_end"))
-	
 
 
 func ally_turn_start():

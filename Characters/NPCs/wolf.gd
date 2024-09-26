@@ -14,6 +14,7 @@ var atk_targets: Array = []
 
 # Attributes
 const BASE_MOVEMENT := 2
+@export var initiative := "1d400"
 @export var max_health := 24
 @export var health := 24
 @export var movement := 2

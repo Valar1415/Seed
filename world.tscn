@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=4 uid="uid://5ssn378etleb"]
+[gd_scene load_steps=17 format=4 uid="uid://5ssn378etleb"]
 
 [ext_resource type="PackedScene" uid="uid://dtvrsm7py3m6y" path="res://Characters/PCs/player.tscn" id="1_8siv5"]
 [ext_resource type="TileSet" uid="uid://dhy45riix4ao6" path="res://Tile Sets/Ground.tres" id="1_33e52"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://temp/path_debug.gd" id="2_ff5n6"]
 [ext_resource type="TileSet" uid="uid://bwdkad5r1bl6f" path="res://Tile Sets/Houses.tres" id="2_n4sac"]
 [ext_resource type="Script" path="res://AStar_Pathfinding.gd" id="2_ovv0h"]
+[ext_resource type="Script" path="res://Utility/TurnManager/initiative_manager.gd" id="3_r5ven"]
 [ext_resource type="PackedScene" uid="uid://datrxqa6qokki" path="res://Characters/NPCs/wolf.tscn" id="5_8ysdf"]
 [ext_resource type="Texture2D" uid="uid://b3442xm58r22h" path="res://Characters/PCs/Knighter.png" id="7_5dtii"]
 [ext_resource type="Texture2D" uid="uid://2dtig25mr8rl" path="res://Characters/NPCs/Wolf.png" id="8_g07uy"]
@@ -14,12 +15,16 @@
 [ext_resource type="Texture2D" uid="uid://chsf6uoky73wj" path="res://Utility/Initiative Bar/Circle.png" id="8_uvgr3"]
 [ext_resource type="Texture2D" uid="uid://de6sqv73p5d2o" path="res://Utility/Initiative Bar/Line.png" id="10_e3rxe"]
 [ext_resource type="FontFile" uid="uid://cv44u08rsmf26" path="res://temp/Aleo-Black.ttf" id="11_8jqm7"]
+[ext_resource type="Script" path="res://InitiativeBar.gd" id="11_txjda"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_o32pj")
 
 [node name="PathDebug" type="Line2D" parent="."]
 script = ExtResource("2_ff5n6")
+
+[node name="InitiativeManager" type="Node2D" parent="."]
+script = ExtResource("3_r5ven")
 
 [node name="TileMap" type="Node2D" parent="."]
 script = ExtResource("2_ovv0h")
@@ -84,7 +89,6 @@ theme_override_constants/margin_left = 24
 theme_override_constants/margin_top = 24
 theme_override_constants/margin_right = 24
 theme_override_constants/margin_bottom = 24
-metadata/_edit_lock_ = true
 
 [node name="PanelContainer" type="PanelContainer" parent="GUI/InitiativeBar"]
 custom_minimum_size = Vector2(100, 0)
@@ -96,6 +100,7 @@ size_flags_vertical = 8
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+script = ExtResource("11_txjda")
 
 [node name="1" type="TextureRect" parent="GUI/InitiativeBar/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 80)
