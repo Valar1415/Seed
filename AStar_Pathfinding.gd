@@ -9,7 +9,7 @@ var astar = AStarGrid2D.new()
 @onready var ground: TileMapLayer = $Ground
 @onready var tilemap_layers := tile_map.get_children()
 @onready var tilemap_size = bounds.get_used_rect().end - bounds.get_used_rect().position
-@onready var enemies := $"../Enemies".get_children()
+@onready var enemies := $"../Combatants/Enemies".get_children()
 
 
 

@@ -1,10 +1,10 @@
 extends Area2D
 
-signal enemy_turn_finished
+signal enemy_turn_end
 
 # Get nodes
-@onready var tile_map: Node2D = $"../../TileMap"
-@onready var tileMap_ground: TileMapLayer = $"../../TileMap/Ground"
+@onready var tile_map: Node2D = $"../../../TileMap"
+@onready var tileMap_ground: TileMapLayer = $"../../../TileMap/Ground"
 @onready var player: Area2D = $"../../Allies/Player"
 @onready var range: Area2D = $Range
 @onready var allies: Node2D = $"../../Allies"
@@ -24,7 +24,6 @@ const BASE_MOVEMENT := 2
 
 # Pathfinding
 @onready var astar = tile_map.astar
-#var astar = tile_map.astar
 var path: Array[Vector2i]
 
 func _ready():
@@ -72,7 +71,7 @@ func act():
 	
 	await get_tree().create_timer(2).timeout
 	set_tilemap_obstacle(true)
-	emit_signal("enemy_turn_finished")
+	emit_signal("enemy_turn_end")
 	
 
 func attack(target_enemy):

@@ -41,7 +41,7 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="Wolf" type="Area2D"]
+[node name="Wolf" type="Area2D" groups=["enemy"]]
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_hss73")

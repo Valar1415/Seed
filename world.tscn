@@ -15,16 +15,13 @@
 [ext_resource type="Texture2D" uid="uid://chsf6uoky73wj" path="res://Utility/Initiative Bar/Circle.png" id="8_uvgr3"]
 [ext_resource type="Texture2D" uid="uid://de6sqv73p5d2o" path="res://Utility/Initiative Bar/Line.png" id="10_e3rxe"]
 [ext_resource type="FontFile" uid="uid://cv44u08rsmf26" path="res://temp/Aleo-Black.ttf" id="11_8jqm7"]
-[ext_resource type="Script" path="res://InitiativeBar.gd" id="11_txjda"]
+[ext_resource type="Script" path="res://Utility/TurnManager/UIInitiativeBar.gd" id="11_txjda"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_o32pj")
 
 [node name="PathDebug" type="Line2D" parent="."]
 script = ExtResource("2_ff5n6")
-
-[node name="InitiativeManager" type="Node2D" parent="."]
-script = ExtResource("3_r5ven")
 
 [node name="TileMap" type="Node2D" parent="."]
 script = ExtResource("2_ovv0h")
@@ -43,37 +40,34 @@ metadata/_edit_lock_ = true
 tile_map_data = PackedByteArray("AAAHAAcAAAAAAAAAAAAHAAQAAAAAAAAAAAABAAYAAAAAAAAAAAACAAcAAAAAAAAAAAAEAAQAAAAAAAAAAAACAAIAAAAAAAAAAAACAAEAAAAAAAAAAAABAAEAAAAAAAAAAAA=")
 tile_set = ExtResource("2_n4sac")
 
-[node name="Enemies" type="Node2D" parent="."]
+[node name="Combatants" type="Node2D" parent="."]
+script = ExtResource("3_r5ven")
 
-[node name="Wolf" parent="Enemies" instance=ExtResource("5_8ysdf")]
+[node name="Enemies" type="Node2D" parent="Combatants"]
+
+[node name="Wolf" parent="Combatants/Enemies" instance=ExtResource("5_8ysdf")]
 position = Vector2(392, 114)
 
-[node name="Wolf2" parent="Enemies" instance=ExtResource("5_8ysdf")]
+[node name="Wolf2" parent="Combatants/Enemies" instance=ExtResource("5_8ysdf")]
 position = Vector2(369, 259)
 
-[node name="Wolf3" parent="Enemies" instance=ExtResource("5_8ysdf")]
+[node name="Wolf3" parent="Combatants/Enemies" instance=ExtResource("5_8ysdf")]
 position = Vector2(452, 126)
 
-[node name="Wolf4" parent="Enemies" instance=ExtResource("5_8ysdf")]
-position = Vector2(457, 186)
+[node name="Allies" type="Node2D" parent="Combatants"]
 
-[node name="Wolf5" parent="Enemies" instance=ExtResource("5_8ysdf")]
-position = Vector2(384, 183)
+[node name="NPC" parent="Combatants/Allies" instance=ExtResource("8_gpimd")]
 
-[node name="Allies" type="Node2D" parent="."]
-
-[node name="NPC" parent="Allies" instance=ExtResource("8_gpimd")]
-
-[node name="NPC2" parent="Allies" instance=ExtResource("8_gpimd")]
+[node name="NPC2" parent="Combatants/Allies" instance=ExtResource("8_gpimd")]
 position = Vector2(179, 596)
 
-[node name="NPC3" parent="Allies" instance=ExtResource("8_gpimd")]
+[node name="NPC3" parent="Combatants/Allies" instance=ExtResource("8_gpimd")]
 position = Vector2(670, 605)
 
-[node name="NPC4" parent="Allies" instance=ExtResource("8_gpimd")]
+[node name="NPC4" parent="Combatants/Allies" instance=ExtResource("8_gpimd")]
 position = Vector2(34, 524)
 
-[node name="Player" parent="Allies" instance=ExtResource("1_8siv5")]
+[node name="Player" parent="Combatants/Allies" instance=ExtResource("1_8siv5")]
 position = Vector2(333, 611)
 
 [node name="GUI" type="CanvasLayer" parent="."]
@@ -177,6 +171,6 @@ theme_override_fonts/font = ExtResource("11_8jqm7")
 theme_override_font_sizes/font_size = 16
 text = "SEND"
 
-[connection signal="focus_entered" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Message" to="Allies/Player" method="_on_message_focus_entered"]
-[connection signal="focus_exited" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Message" to="Allies/Player" method="_on_message_focus_exited"]
+[connection signal="focus_entered" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Message" to="Combatants/Allies/Player" method="_on_message_focus_entered"]
+[connection signal="focus_exited" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Message" to="Combatants/Allies/Player" method="_on_message_focus_exited"]
 [connection signal="pressed" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Send" to="." method="_on_send_pressed"]

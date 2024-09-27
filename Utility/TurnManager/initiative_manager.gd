@@ -1,7 +1,7 @@
 extends Node2D
 
-@onready var enemies: Array = $"../Enemies".get_children()
-@onready var allies: Array = $"../Allies".get_children()
+@onready var enemies: Array = $"../Combatants/Enemies".get_children()
+@onready var allies: Array = $"../Combatants/Allies".get_children()
 
 var initiative_order: Array = []
 
@@ -23,3 +23,40 @@ func _ready() -> void:
 	# Print name and their rolled initiative
 	#for entry in initiative_order:
 		#print("%s: %d" % [entry["name"], entry["initiative"]])
+	start_turns()
+
+func start_turns() -> void:
+	# Loop through the initiative order
+	for combatant in initiative_order:
+		var character = find_combatant_by_name(combatant["name"])
+		if character.is_in_group("enemy"):
+			print(combatant["name"], " initiative: ", combatant["initiative"])
+			enemy_turn_start(character)
+			character.act()  # Call the act function on the active combatant
+			await character.enemy_turn_end # Wait before the next turn
+		elif character.is_in_group("player"):
+			ally_turn_start(character)
+			await character.turn_end
+			character.turn = false
+	start_turns()
+
+func find_combatant_by_name(name: String) -> Node:
+	var characters = enemies + allies
+	for character in characters:
+		if character.name == name:
+			return character
+	return null
+
+
+func ally_turn_start(player):
+	player.turn = true
+	player.movement = 1
+	player.rolls = 1
+	player.end_turn_button.disabled = false
+	print (player.name)
+	print("ally turn")
+
+func enemy_turn_start(enemy):
+	enemy.movement = 2
+	enemy.rolls = 1
+	print("enemy turn")

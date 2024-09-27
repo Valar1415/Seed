@@ -39,7 +39,7 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="Player" type="Area2D"]
+[node name="Player" type="Area2D" groups=["player"]]
 z_index = 5
 collision_mask = 6
 script = ExtResource("1_e5ccn")
@@ -196,6 +196,7 @@ offset_bottom = -69.0
 grow_horizontal = 0
 grow_vertical = 0
 size_flags_vertical = 8
+disabled = true
 text = "END TURN"
 
 [node name="Abilities" type="HBoxContainer" parent="CanvasLayer"]
