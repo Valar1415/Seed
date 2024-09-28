@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://ggkes6xjqlfn"]
+
+[ext_resource type="Texture2D" uid="uid://de6sqv73p5d2o" path="res://Utility/Initiative Bar/Line.png" id="1_d0rf6"]
+
+[node name="Line" type="TextureRect"]
+texture = ExtResource("1_d0rf6")
+stretch_mode = 3

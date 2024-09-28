@@ -18,7 +18,7 @@ func _ready() -> void:
 	initiative_order.sort_custom(func(a, b): return a["initiative"] > b["initiative"])
 	
 	
-	await get_tree().create_timer(0.5).timeout
+	await get_tree().create_timer(0.1).timeout
 	UiEventBus.initiative_order.emit(initiative_order)
 	# Print name and their rolled initiative
 	#for entry in initiative_order:
@@ -30,15 +30,16 @@ func start_turns() -> void:
 	for combatant in initiative_order:
 		var character = find_combatant_by_name(combatant["name"])
 		if character.is_in_group("enemy"):
-			print(combatant["name"], " initiative: ", combatant["initiative"])
+			#print(combatant["name"], " initiative: ", combatant["initiative"])
 			enemy_turn_start(character)
 			character.act()  # Call the act function on the active combatant
-			await character.enemy_turn_end # Wait before the next turn
+			await UiEventBus.turn_end # Wait before the next turn
 		elif character.is_in_group("player"):
 			ally_turn_start(character)
-			await character.turn_end
+			await UiEventBus.turn_end
 			character.turn = false
 	start_turns()
+
 
 func find_combatant_by_name(name: String) -> Node:
 	var characters = enemies + allies
@@ -53,10 +54,11 @@ func ally_turn_start(player):
 	player.movement = 1
 	player.rolls = 1
 	player.end_turn_button.disabled = false
-	print (player.name)
-	print("ally turn")
+	print_rich("[color=#ADD8E6]Ally turn:[/color] %s" % player.name)
+
+
 
 func enemy_turn_start(enemy):
 	enemy.movement = 2
 	enemy.rolls = 1
-	print("enemy turn")
+	print_rich("[color=#ADD8E6]Enemy turn:[/color] %s" % enemy.name)

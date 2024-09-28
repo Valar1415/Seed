@@ -1,7 +1,5 @@
 extends Area2D
 
-signal turn_end
-
 @onready var tile_map: TileMapLayer = $"../../../TileMap/Ground"
 
 @export var initiative := "1d20"
@@ -15,7 +13,7 @@ var turn := false:
 		if value == true:
 			print("ahhahahaha")
 			turn = false
-			emit_signal("turn_end")
+			UiEventBus.turn_end.emit(self)
 
 
 func _ready() -> void:

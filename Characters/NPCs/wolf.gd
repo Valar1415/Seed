@@ -1,7 +1,5 @@
 extends Area2D
 
-signal enemy_turn_end
-
 # Get nodes
 @onready var tile_map: Node2D = $"../../../TileMap"
 @onready var tileMap_ground: TileMapLayer = $"../../../TileMap/Ground"
@@ -71,7 +69,7 @@ func act():
 	
 	await get_tree().create_timer(2).timeout
 	set_tilemap_obstacle(true)
-	emit_signal("enemy_turn_end")
+	UiEventBus.turn_end.emit(self)
 	
 
 func attack(target_enemy):
@@ -118,8 +116,8 @@ func check_atk_targets_in_range():
 		return
 	
 	for area in areas:
-		if area.is_in_group("dead"):
-			pass
+		if area.is_in_group("dead") or area.is_in_group("obstacle"):
+			continue
 		else:
 			atk_targets.append(area)
 
@@ -139,7 +137,26 @@ func pick_target():
 	return closest_target  # Return the closest ally
 
 func rotate_towards_target(target):
-	self.look_at(target)
+	var direction = (target - global_position).normalized()
+	
+	# Determine the closest cardinal direction
+	var cardinal_direction = Vector2()
+	
+	if abs(direction.x) > abs(direction.y):
+		cardinal_direction.x = sign(direction.x)  # Either 1 or -1 for left/right
+	else:
+		cardinal_direction.y = sign(direction.y)  # Either 1 or -1 for up/down
+	
+	# Set the rotation based on the cardinal direction
+	if cardinal_direction.x == 1:
+		rotation = 0  # Right
+	elif cardinal_direction.x == -1:
+		rotation = deg_to_rad(180)  # Left
+	elif cardinal_direction.y == 1:
+		rotation = deg_to_rad(90)  # Down
+	elif cardinal_direction.y == -1:
+		rotation = deg_to_rad(-90)  # Up
+	
 	rotation += deg_to_rad(-90)
 	await get_tree().create_timer(0.5).timeout
 

@@ -3,9 +3,9 @@
 [ext_resource type="Texture2D" uid="uid://c3p72unurxp4u" path="res://temp/House.png" id="1_cg3na"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qvdon"]
-size = Vector2(70, 70)
+size = Vector2(69, 69)
 
-[node name="Area2D" type="Area2D"]
+[node name="House" type="Area2D" groups=["obstacle"]]
 collision_layer = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

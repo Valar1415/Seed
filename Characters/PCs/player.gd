@@ -1,14 +1,24 @@
 extends Area2D
 
-signal turn_end
+## GET NODES
+@onready var enemies: Array = $"../../Enemies".get_children()
 
+## ENVIRONMENT
 @onready var tile_map: Node2D = $"../../../TileMap"
 @onready var tileMap_ground: TileMapLayer = $"../../../TileMap/Ground"
 @onready var world: Node2D = $"../../.."
+
+## TARGETING
 @onready var target_icon: Sprite2D = $TargetIcon
 @onready var raycast: RayCast2D = $RayCast2D
+
+## MISC
 @onready var debuffIcon = preload("res://Utility/debuff_icon.tscn")
+var chat_inactive := true
+
+## TURN ORDER
 @onready var end_turn_button: Button = %EndTurnButton
+var turn := false
 
 ## MOUSE DRAG
 var is_dragging = false
@@ -25,7 +35,7 @@ var rolls: int = 1:
 		rolls = value
 		%Rolls.text = str("Rolls: ", value)
 
-var initiative := "1d600"
+var initiative := "1d6600"
 var max_health: int = 100
 var health: int = 100
 var max_armor: int = 15
@@ -38,8 +48,6 @@ var current_ability: Abilities = Abilities.A0
 var targeting_active: bool = false
 var dice_result: int = 0
 
-var turn := false
-var chat_inactive := true
 
 
 
@@ -49,10 +57,10 @@ func _ready() -> void:
 	#%HealthLbl.max_value = max_health
 	#%ArmorLbl.max_value = max_armor
 
-func _process(delta) -> void:
-	var mouse_pos = get_global_mouse_position()
-	var mouse_local_pos = tileMap_ground.to_local(mouse_pos)
-	var tile_pos: Vector2i = tileMap_ground.local_to_map(mouse_local_pos)
+func _process(_delta) -> void:
+	var n = calculate_mouse_pos()
+	var mouse_pos = n[0]
+	var tile_pos = n[1]
 	
 	
 	if target_icon.visible: # Aiming
@@ -87,7 +95,7 @@ func _input(event: InputEvent) -> void:
 		elif  event.is_action_pressed("ui_right"):
 			move(Vector2.RIGHT)
 	
-	if event.is_action_pressed("ui_accept"): # Enter
+	if event.is_action_pressed("ui_accept"): # Enter - Send message
 		world._on_send_pressed()
 	
 	if (event is InputEventMouseButton) and event.pressed: # Release focus from chat
@@ -95,18 +103,23 @@ func _input(event: InputEvent) -> void:
 		if !Rect2(Vector2(0,0), %Message.get_size()).has_point(evLocal.position):
 			%Message.release_focus()
 		
-		if targeting_active:
+		if event.is_action_pressed("mouse_left_click") and targeting_active:
 			# Calculate the mouse position in the TileMap's local space
-			var mouse_pos = get_global_mouse_position()
-			var mouse_local_pos = tileMap_ground.to_local(mouse_pos)
-			var tile_pos = tileMap_ground.local_to_map(mouse_local_pos)
+			var n = calculate_mouse_pos()
+			var tile_pos = n[1]
+			
+			# Find enemy on selected tile
+			var target_pos = Vector2(tile_pos.x, tile_pos.y)
+			var target_enemy = find_enemy_on_tile(tile_pos)
+			
+			# Check if ranged attack is blocked
+			#print("collided with: ", raycast.get_collider().name)
+			var range_atk_collider = raycast.get_collider()
 			
 			# Execute the ability with the target tile position
-			var target_pos = Vector2(tile_pos.x, tile_pos.y)
-			var target_enemy = raycast.get_collider()
-			
-			if rolls > 0:
-				execute_ability(current_ability, target_pos, target_enemy)
+			if !range_atk_collider.is_in_group("obstacle"): # Check if ranged attack is blocked
+				if rolls > 0:
+						execute_ability(current_ability, target_pos, target_enemy)
 			
 			# Deactivate targeting
 			targeting_active = false
@@ -132,8 +145,7 @@ func move(direction: Vector2):
 	global_position = tileMap_ground.map_to_local(target_tile)
 	movement -= 1
 
-func execute_ability(ability: Abilities, target_pos: Vector2,
-target_enemy) -> void:
+func execute_ability(ability: Abilities, target_pos: Vector2, target_enemy) -> void:
 	print("Ability executed at position: ", target_pos)
 	print("target enemy name: ", target_enemy)
 	match ability:
@@ -170,19 +182,7 @@ target_enemy) -> void:
 			rolls -= 1
 
 
-func snap_to_nearest_tile():
-	var closest_tile = tileMap_ground.local_to_map(global_position)
-	global_position = tileMap_ground.map_to_local(closest_tile)
 
-func _on_end_turn_button_pressed() -> void:
-	end_turn_button.disabled = true
-	emit_signal("turn_end")
-
-func _on_message_focus_entered() -> void:
-	chat_inactive = false
-
-func _on_message_focus_exited() -> void:
-	chat_inactive = true
 
 ## ATTRIBUTES
 
@@ -262,3 +262,40 @@ func _on_a_6_pressed() -> void:
 	target_icon.visible = true
 	targeting_active = true
 	pass
+
+## MISC
+
+func find_enemy_on_tile(tile_pos: Vector2) -> Node:
+	var tile_pos_int: Vector2i = tile_pos.floor()  # Convert to Vector2i (rounds down to integer coordinates)
+	for enemy in enemies:
+		var enemy_tile_pos = tileMap_ground.local_to_map(enemy.global_position)  # Convert enemy position to tile position
+		if enemy_tile_pos == tile_pos_int:
+			return enemy  # Return the enemy if it's on the clicked tile
+	return null  # No enemy found on this tile
+
+func check_ranged_obstacles():
+	pass
+	
+
+func calculate_mouse_pos():
+	var mouse_pos = get_global_mouse_position()
+	var mouse_local_pos = tileMap_ground.to_local(mouse_pos)
+	var tile_pos = tileMap_ground.local_to_map(mouse_local_pos)
+	
+	return [mouse_pos, tile_pos]
+
+func snap_to_nearest_tile():
+	var closest_tile = tileMap_ground.local_to_map(global_position)
+	global_position = tileMap_ground.map_to_local(closest_tile)
+
+## SIGNALS
+
+func _on_end_turn_button_pressed() -> void:
+	end_turn_button.disabled = true
+	UiEventBus.turn_end.emit(self)
+
+func _on_message_focus_entered() -> void:
+	chat_inactive = false
+
+func _on_message_focus_exited() -> void:
+	chat_inactive = true
