@@ -1,12 +1,15 @@
 extends Node2D
 
-@onready var enemies: Array = $"../Combatants/Enemies".get_children()
-@onready var allies: Array = $"../Combatants/Allies".get_children()
+var enemies: Array
+var allies: Array
 
 var initiative_order: Array = []
 
 
 func _ready() -> void:
+	await get_tree().create_timer(1.1).timeout
+	enemies = $"../Combatants/Enemies".get_children()
+	allies = $"../Combatants/Allies".get_children()
 	var characters = enemies + allies
 	
 	# Roll initiative and store character name with the rolled initiative
@@ -17,8 +20,6 @@ func _ready() -> void:
 	# Sort in descending order
 	initiative_order.sort_custom(func(a, b): return a["initiative"] > b["initiative"])
 	
-	
-	await get_tree().create_timer(0.1).timeout
 	UiEventBus.initiative_order.emit(initiative_order)
 	# Print name and their rolled initiative
 	#for entry in initiative_order:
@@ -41,10 +42,10 @@ func start_turns() -> void:
 	start_turns()
 
 
-func find_combatant_by_name(name: String) -> Node:
+func find_combatant_by_name(char_name: String) -> Node:
 	var characters = enemies + allies
 	for character in characters:
-		if character.name == name:
+		if character.name == char_name:
 			return character
 	return null
 

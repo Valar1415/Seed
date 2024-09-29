@@ -3,7 +3,6 @@ extends Area2D
 # Get nodes
 @onready var tile_map: Node2D = $"../../../TileMap"
 @onready var tileMap_ground: TileMapLayer = $"../../../TileMap/Ground"
-@onready var player: Area2D = $"../../Allies/Player"
 @onready var range: Area2D = $Range
 @onready var allies: Node2D = $"../../Allies"
 

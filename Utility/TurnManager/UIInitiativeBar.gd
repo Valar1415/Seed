@@ -10,13 +10,15 @@ func _ready() -> void:
 	UiEventBus.turn_end.connect(sort_initiative_bar)
 	
 
-func add_initiative_bar(order):
+func add_initiative_bar(order) -> void:
 	# Clear existing TextureRects before adding new ones
 	clear_children()
 	
 	for entry in order:
 		var char_name = entry["name"]
+		#print(char_name)
 		var char_sprite = get_character_sprite(char_name)
+		
 		
 		# Instance the TextureRect from the template scene
 		var texture_instance = placeholder_texture.instantiate()
@@ -52,8 +54,8 @@ func sort_initiative_bar(_character):
 
 # Helper function to get the character sprite (finds it from enemies/allies)
 func get_character_sprite(char_name: String) -> Sprite2D:
-	var characters_root = get_tree().root.get_node("World/Combatants")  # Adjust path to the characters root node
-	var character = characters_root.find_child(char_name, true)
+	var characters_root = get_tree().root.get_node("World/Combatants")
+	var character = characters_root.find_child(char_name, true, false)
 	
 	if character and character.has_node("Sprite2D"):
 		return character.get_node("Sprite2D")

@@ -1,0 +1,121 @@
+[gd_scene load_steps=6 format=3 uid="uid://dspcifktf4fm8"]
+
+[ext_resource type="Script" path="res://Utility/Multiplayer Management/MultiplayerController.gd" id="1_q27r7"]
+[ext_resource type="Texture2D" uid="uid://b3442xm58r22h" path="res://Characters/PCs/Knighter.png" id="2_wj2ui"]
+[ext_resource type="Texture2D" uid="uid://dnxp837jin7xo" path="res://Characters/PCs/Ranger.png" id="3_87lb6"]
+[ext_resource type="Texture2D" uid="uid://ba2vovnx8jg60" path="res://Characters/PCs/KnighterHover.png" id="3_x6ph7"]
+[ext_resource type="Texture2D" uid="uid://bwmdhrbt0uexu" path="res://Characters/PCs/RangerHover.png" id="5_1xgic"]
+
+[node name="MultiplayerController" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_q27r7")
+
+[node name="ClassChoice" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ClassChoice"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+
+[node name="KnighterClass" type="TextureButton" parent="ClassChoice/VBoxContainer"]
+custom_minimum_size = Vector2(140, 140)
+layout_mode = 2
+texture_normal = ExtResource("2_wj2ui")
+texture_hover = ExtResource("3_x6ph7")
+stretch_mode = 0
+
+[node name="RangerClass" type="TextureButton" parent="ClassChoice/VBoxContainer"]
+custom_minimum_size = Vector2(140, 140)
+layout_mode = 2
+texture_normal = ExtResource("3_87lb6")
+texture_hover = ExtResource("5_1xgic")
+stretch_mode = 0
+
+[node name="Host" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -157.0
+offset_top = -73.9998
+offset_right = 6.0
+offset_bottom = -22.9998
+grow_horizontal = 2
+grow_vertical = 2
+text = "Host"
+
+[node name="Join" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -157.0
+offset_top = 0.000152588
+offset_right = 6.0
+offset_bottom = 51.0002
+grow_horizontal = 2
+grow_vertical = 2
+text = "Join"
+
+[node name="StartGame" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -157.0
+offset_top = 75.0002
+offset_right = 6.0
+offset_bottom = 126.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Start Game"
+
+[node name="PlayerName" type="LineEdit" parent="."]
+custom_minimum_size = Vector2(250, 25)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -202.0
+offset_top = -169.0
+offset_right = 48.0
+offset_bottom = -138.667
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 445.0
+offset_top = 113.0
+offset_right = 549.0
+offset_bottom = 136.0
+text = "Player Name:"
+
+[connection signal="pressed" from="ClassChoice/VBoxContainer/KnighterClass" to="." method="_on_knighter_class_pressed"]
+[connection signal="pressed" from="ClassChoice/VBoxContainer/RangerClass" to="." method="_on_ranger_class_pressed"]
+[connection signal="pressed" from="Host" to="." method="_on_host_button_down"]
+[connection signal="pressed" from="Join" to="." method="_on_join_button_down"]
+[connection signal="pressed" from="StartGame" to="." method="_on_start_game_button_down"]

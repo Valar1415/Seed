@@ -18,6 +18,7 @@
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_o32pj")
+PlayerScene = ExtResource("1_8siv5")
 
 [node name="PathDebug" type="Line2D" parent="."]
 script = ExtResource("2_ff5n6")
@@ -55,9 +56,6 @@ position = Vector2(452, 126)
 
 [node name="Allies" type="Node2D" parent="Combatants"]
 
-[node name="Player" parent="Combatants/Allies" instance=ExtResource("1_8siv5")]
-position = Vector2(333, 611)
-
 [node name="NPC" parent="Combatants/Allies" instance=ExtResource("8_gpimd")]
 
 [node name="NPC2" parent="Combatants/Allies" instance=ExtResource("8_gpimd")]
@@ -68,6 +66,20 @@ position = Vector2(670, 605)
 
 [node name="NPC4" parent="Combatants/Allies" instance=ExtResource("8_gpimd")]
 position = Vector2(34, 524)
+
+[node name="SpawnPoints" type="Node2D" parent="."]
+
+[node name="0" type="Node2D" parent="SpawnPoints" groups=["PlayerSpawnPoint"]]
+position = Vector2(238, 668)
+
+[node name="1" type="Node2D" parent="SpawnPoints" groups=["PlayerSpawnPoint"]]
+position = Vector2(318, 668)
+
+[node name="2" type="Node2D" parent="SpawnPoints" groups=["PlayerSpawnPoint"]]
+position = Vector2(383, 667)
+
+[node name="3" type="Node2D" parent="SpawnPoints" groups=["PlayerSpawnPoint"]]
+position = Vector2(454, 673)
 
 [node name="GUI" type="CanvasLayer" parent="."]
 
@@ -151,10 +163,9 @@ placeholder_text = "Message"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 8
+focus_mode = 0
 theme_override_fonts/font = ExtResource("11_8jqm7")
 theme_override_font_sizes/font_size = 16
 text = "SEND"
 
-[connection signal="focus_entered" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Message" to="Combatants/Allies/Player" method="_on_message_focus_entered"]
-[connection signal="focus_exited" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Message" to="Combatants/Allies/Player" method="_on_message_focus_exited"]
 [connection signal="pressed" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Send" to="." method="_on_send_pressed"]

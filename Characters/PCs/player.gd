@@ -1,7 +1,13 @@
 extends Area2D
 
+## MULTIPLAYER
+@onready var authority = $MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
+@onready var player_data = GameManager.Players[multiplayer.get_unique_id()]
+
 ## GET NODES
 @onready var enemies: Array = $"../../Enemies".get_children()
+@onready var sprite: Sprite2D = $Sprite2D
+
 
 ## ENVIRONMENT
 @onready var tile_map: Node2D = $"../../../TileMap"
@@ -52,8 +58,13 @@ var dice_result: int = 0
 
 
 func _ready() -> void:
+	$MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
+	set_class_texture(player_data["class"])
+	
+	await get_tree().create_timer(0.1).timeout
 	snap_to_nearest_tile()
 	$Camera2D.position = global_position
+	print("haha: ", player_data)
 	#%HealthLbl.max_value = max_health
 	#%ArmorLbl.max_value = max_armor
 
@@ -72,12 +83,12 @@ func _process(_delta) -> void:
 	if is_dragging: # Mouse Drag&Drop
 		global_position = mouse_pos
 
-func _input_event(viewport, event, shape_idx): # Mouse Drag&Drop
+func _input_event(_viewport, event, _shape_idx): # Mouse Drag&Drop
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			is_dragging = true
 			#print("Mouse button pressed on player")
-
+	
 	
 	if event is InputEventMouseButton and not event.pressed:
 		if event.button_index == MOUSE_BUTTON_LEFT:
@@ -85,46 +96,49 @@ func _input_event(viewport, event, shape_idx): # Mouse Drag&Drop
 			snap_to_nearest_tile()
 
 func _input(event: InputEvent) -> void:
-	if turn and chat_inactive and movement:
-		if event.is_action_pressed("ui_up"):
-			move(Vector2.UP)
-		elif event.is_action_pressed("ui_down"):
-			move(Vector2.DOWN)
-		elif event.is_action_pressed("ui_left"):
-			move(Vector2.LEFT)
-		elif  event.is_action_pressed("ui_right"):
-			move(Vector2.RIGHT)
+	if authority:
+		if turn and chat_inactive and movement:
+			if event.is_action_pressed("ui_up"):
+				move(Vector2.UP)
+			elif event.is_action_pressed("ui_down"):
+				move(Vector2.DOWN)
+			elif event.is_action_pressed("ui_left"):
+				move(Vector2.LEFT)
+			elif  event.is_action_pressed("ui_right"):
+				move(Vector2.RIGHT)
+		
+			if event.is_action_pressed("mouse_left_click") and targeting_active:
+				# Calculate the mouse position in the TileMap's local space
+				var n = calculate_mouse_pos()
+				var tile_pos = n[1]
+				
+				# Find enemy on selected tile
+				var target_pos = Vector2(tile_pos.x, tile_pos.y)
+				var target_enemy = find_enemy_on_tile(tile_pos)
+				
+				# Check if ranged attack is blocked
+				#print("collided with: ", raycast.get_collider().name)
+				var range_atk_collider = raycast.get_collider()
+				
+				# Execute the ability with the target tile position
+				if !range_atk_collider.is_in_group("obstacle"): # Check if ranged attack is blocked
+					if rolls > 0:
+							execute_ability(current_ability, target_pos, target_enemy)
+				
+				# Deactivate targeting
+				targeting_active = false
+				target_icon.visible = false
+				raycast.enabled = false
+	
 	
 	if event.is_action_pressed("ui_accept"): # Enter - Send message
 		world._on_send_pressed()
 	
-	if (event is InputEventMouseButton) and event.pressed: # Release focus from chat
-		var evLocal = make_input_local(event)
-		if !Rect2(Vector2(0,0), %Message.get_size()).has_point(evLocal.position):
-			%Message.release_focus()
+	#if (event is InputEventMouseButton) and event.pressed: # Release focus from chat
+		#var evLocal = make_input_local(event)
+		#if !Rect2(Vector2(0,0), %Message.get_size()).has_point(evLocal.position):
+			#%Message.release_focus()
 		
-		if event.is_action_pressed("mouse_left_click") and targeting_active:
-			# Calculate the mouse position in the TileMap's local space
-			var n = calculate_mouse_pos()
-			var tile_pos = n[1]
-			
-			# Find enemy on selected tile
-			var target_pos = Vector2(tile_pos.x, tile_pos.y)
-			var target_enemy = find_enemy_on_tile(tile_pos)
-			
-			# Check if ranged attack is blocked
-			#print("collided with: ", raycast.get_collider().name)
-			var range_atk_collider = raycast.get_collider()
-			
-			# Execute the ability with the target tile position
-			if !range_atk_collider.is_in_group("obstacle"): # Check if ranged attack is blocked
-				if rolls > 0:
-						execute_ability(current_ability, target_pos, target_enemy)
-			
-			# Deactivate targeting
-			targeting_active = false
-			target_icon.visible = false
-			raycast.enabled = false
 
 func move(direction: Vector2):
 	var current_tile: Vector2i = tileMap_ground.local_to_map(global_position)
@@ -217,8 +231,7 @@ func take_damage(amount):
 	%ArmorBar.value = armor
 	%ArmorLbl.text = str(armor, "/", max_armor)
 
-#func update_rolls():
-	#
+
 
 ## ABILITIES
 
@@ -287,6 +300,15 @@ func calculate_mouse_pos():
 func snap_to_nearest_tile():
 	var closest_tile = tileMap_ground.local_to_map(global_position)
 	global_position = tileMap_ground.map_to_local(closest_tile)
+
+func set_class_texture(selected_class: String):
+	match selected_class:
+		"knighter":
+			sprite.texture = preload("res://Characters/PCs/Knighter.png")
+		"ranger":
+			sprite.texture = preload("res://Characters/PCs/Ranger.png")
+		_:
+			print("Unknown class: " + selected_class)
 
 ## SIGNALS
 

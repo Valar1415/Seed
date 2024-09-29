@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dtvrsm7py3m6y"]
+[gd_scene load_steps=14 format=3 uid="uid://dtvrsm7py3m6y"]
 
 [ext_resource type="Texture2D" uid="uid://b3442xm58r22h" path="res://Characters/PCs/Knighter.png" id="1_ccq13"]
 [ext_resource type="Script" path="res://Characters/PCs/player.gd" id="1_e5ccn"]
@@ -38,6 +38,11 @@ corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_j5j14"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
 
 [node name="Player" type="Area2D" groups=["player"]]
 z_index = 5
@@ -196,6 +201,7 @@ offset_bottom = -69.0
 grow_horizontal = 0
 grow_vertical = 0
 size_flags_vertical = 8
+focus_mode = 0
 disabled = true
 text = "END TURN"
 
@@ -213,26 +219,32 @@ grow_vertical = 0
 
 [node name="A1" type="Button" parent="CanvasLayer/Abilities"]
 layout_mode = 2
+focus_mode = 0
 text = "Charge"
 
 [node name="A2" type="Button" parent="CanvasLayer/Abilities"]
 layout_mode = 2
+focus_mode = 0
 text = "Shield & Sword"
 
 [node name="A3" type="Button" parent="CanvasLayer/Abilities"]
 layout_mode = 2
+focus_mode = 0
 text = "Defend"
 
 [node name="A4" type="Button" parent="CanvasLayer/Abilities"]
 layout_mode = 2
+focus_mode = 0
 text = "Wide Slash"
 
 [node name="A5" type="Button" parent="CanvasLayer/Abilities"]
 layout_mode = 2
+focus_mode = 0
 text = "Defense Up"
 
 [node name="A6" type="Button" parent="CanvasLayer/Abilities"]
 layout_mode = 2
+focus_mode = 0
 text = "Powerful Strike"
 
 [node name="Rolls&Movement" type="PanelContainer" parent="CanvasLayer"]
@@ -327,6 +339,11 @@ theme_override_constants/margin_bottom = 2
 unique_name_in_owner = true
 layout_mode = 2
 columns = 4
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_interval = 0.1
+delta_interval = 0.1
+replication_config = SubResource("SceneReplicationConfig_j5j14")
 
 [connection signal="input_event" from="." to="." method="_input_event"]
 [connection signal="pressed" from="CanvasLayer/EndTurnButton" to="." method="_on_end_turn_button_pressed"]

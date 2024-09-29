@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Seed"
-run/main_scene="res://world.tscn"
+run/main_scene="res://Utility/Multiplayer Management/MultiplayerController.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 DiceRoll="*res://Utility/DiceRoll/DiceRoll.gd"
 UiEventBus="*res://Utility/Event Buses/UI_Event_Bus.gd"
+GameManager="*res://Utility/Multiplayer Management/game_manager.gd"
 
 [display]
 
