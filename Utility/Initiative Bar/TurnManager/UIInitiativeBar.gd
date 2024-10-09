@@ -6,10 +6,11 @@ extends VBoxContainer
 
 
 func _ready() -> void:
-	UiEventBus.initiative_order.connect(add_initiative_bar)
-	UiEventBus.turn_end.connect(sort_initiative_bar)
+	UiEventBus.initiative_order.connect(emit_add_initiative_bar)
+	UiEventBus.turn_end.connect(emit_sort_initiative_bar)
 	
 
+@rpc("any_peer", "call_local", "reliable")
 func add_initiative_bar(order) -> void:
 	# Clear existing TextureRects before adding new ones
 	clear_children()
@@ -18,7 +19,7 @@ func add_initiative_bar(order) -> void:
 		var char_name = entry["name"]
 		#print(char_name)
 		var char_sprite = get_character_sprite(char_name)
-		
+		var character = get_character_ref(char_name)
 		
 		# Instance the TextureRect from the template scene
 		var texture_instance = placeholder_texture.instantiate()
@@ -26,6 +27,7 @@ func add_initiative_bar(order) -> void:
 		
 		# Set the TextureRect sprite from the character's icon
 		texture_instance.texture = char_sprite.texture
+		texture_instance.character_reference = character
 		
 		# Add the TextureRect to the VBoxContainer
 		add_child(texture_instance)
@@ -42,6 +44,7 @@ func add_initiative_bar(order) -> void:
 	add_child(line_instance)
 
 
+#@rpc("authority", "call_remote")
 func sort_initiative_bar(_character):
 	if get_child_count() > 0:
 		var first_child = get_child(0)
@@ -52,15 +55,36 @@ func sort_initiative_bar(_character):
 		add_child(second_child)     # Add them back to the bottom
 
 
+#region RPC signals
+func emit_add_initiative_bar(order):
+	add_initiative_bar.rpc(order) # Broadcast the RPC to all peers
+
+func emit_sort_initiative_bar(character):
+	sort_initiative_bar.rpc(character) # Broadcast the RPC to all peers
+#endregion
+
+#region get functions
 # Helper function to get the character sprite (finds it from enemies/allies)
 func get_character_sprite(char_name: String) -> Sprite2D:
-	var characters_root = get_tree().root.get_node("World/Combatants")
-	var character = characters_root.find_child(char_name, true, false)
+	var combatants = get_tree().root.get_node("World/Combatants")
+	var character = combatants.find_child(char_name, true, false)
 	
 	if character and character.has_node("Sprite2D"):
 		return character.get_node("Sprite2D")
 	
 	return null
+
+# Helper function to get the character reference
+func get_character_ref(char_name: String) -> Node:
+	var allies = get_tree().root.get_node("World/Combatants/Allies").get_children()
+	var enemies = get_tree().root.get_node("World/Combatants/Enemies").get_children()
+	var characters = enemies + allies
+	for character in characters:
+		if character.name == char_name:
+			return character
+	return null
+#endregion
+
 
 # Clears all child nodes (used to reset the UI each time)
 func clear_children() -> void:

@@ -7,6 +7,10 @@ var initiative_order: Array = []
 
 
 func _ready() -> void:
+	if multiplayer.is_server():
+		emit_inititative_order()
+
+func emit_inititative_order():
 	await get_tree().create_timer(1.1).timeout
 	enemies = $"../Combatants/Enemies".get_children()
 	allies = $"../Combatants/Allies".get_children()
@@ -26,6 +30,7 @@ func _ready() -> void:
 		#print("%s: %d" % [entry["name"], entry["initiative"]])
 	start_turns()
 
+@rpc("authority", "call_local", "reliable")
 func start_turns() -> void:
 	# Loop through the initiative order
 	for combatant in initiative_order:
@@ -39,7 +44,7 @@ func start_turns() -> void:
 			ally_turn_start(character)
 			await UiEventBus.turn_end
 			character.turn = false
-	start_turns()
+	start_turns.rpc()
 
 
 func find_combatant_by_name(char_name: String) -> Node:
@@ -56,8 +61,6 @@ func ally_turn_start(player):
 	player.rolls = 1
 	player.end_turn_button.disabled = false
 	print_rich("[color=#ADD8E6]Ally turn:[/color] %s" % player.name)
-
-
 
 func enemy_turn_start(enemy):
 	enemy.movement = 2

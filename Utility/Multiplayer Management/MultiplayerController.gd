@@ -4,7 +4,7 @@ extends Control
 @export var port = 8910
 var peer
 
-var selected_class = "knighter"
+var selected_class = "Knighter"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -53,8 +53,8 @@ func SendPlayerInformation(name, id, selected_class):
 
 @rpc("any_peer","call_local")
 func StartGame():
-	var scene = load("res://world.tscn").instantiate()
-	get_tree().root.add_child(scene)
+	var main_scene = load("res://world.tscn").instantiate()
+	get_tree().root.add_child(main_scene)
 	self.hide()
 	
 func hostGame():
@@ -92,6 +92,14 @@ func _on_start_game_button_down():
 
 func _on_knighter_class_pressed() -> void:
 	selected_class = "knighter"
+	#enable_buttons()
 
 func _on_ranger_class_pressed() -> void:
 	selected_class = "ranger"
+	#enable_buttons()
+
+
+#func enable_buttons():
+	#$Host.disabled = false
+	#$Join.disabled = false
+	#$StartGame.disabled = false

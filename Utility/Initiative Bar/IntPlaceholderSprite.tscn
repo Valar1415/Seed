@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c3fvwrbvnqvsr"]
+[gd_scene load_steps=3 format=3 uid="uid://c3fvwrbvnqvsr"]
 
 [ext_resource type="Texture2D" uid="uid://b3442xm58r22h" path="res://Characters/PCs/Knighter.png" id="1_twcpw"]
+[ext_resource type="Script" path="res://Utility/Initiative Bar/int_sprite_hover.gd" id="2_34h8m"]
 
 [node name="1" type="TextureRect"]
 custom_minimum_size = Vector2(0, 80)
@@ -8,3 +9,19 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource("1_twcpw")
 stretch_mode = 3
+script = ExtResource("2_34h8m")
+
+[node name="Highlighter" type="ReferenceRect" parent="."]
+visible = false
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 1
+offset_top = 5.0
+offset_right = 70.0
+offset_bottom = 75.0
+mouse_filter = 2
+border_color = Color(1, 1, 1, 1)
+border_width = 3.0
+editor_only = false
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

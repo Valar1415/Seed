@@ -70,22 +70,28 @@ visible = false
 top_level = true
 texture = ExtResource("3_57v36")
 
-[node name="Attributes" type="Control" parent="."]
+[node name="GUI" type="Control" parent="."]
 layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Attributes" type="Control" parent="GUI"]
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -35.0
-offset_top = -35.0
-offset_right = 35.0
-offset_bottom = 35.0
+offset_left = -55.0
+offset_top = -55.0
+offset_right = 15.0
+offset_bottom = 15.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="HealthBar" type="ProgressBar" parent="Attributes"]
+[node name="HealthBar" type="ProgressBar" parent="GUI/Attributes"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 7
@@ -105,7 +111,7 @@ step = 1.0
 value = 100.0
 show_percentage = false
 
-[node name="HealthLbl" type="Label" parent="Attributes/HealthBar"]
+[node name="HealthLbl" type="Label" parent="GUI/Attributes/HealthBar"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -126,7 +132,7 @@ text = "100/100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ArmorBar" type="ProgressBar" parent="Attributes"]
+[node name="ArmorBar" type="ProgressBar" parent="GUI/Attributes"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 7
@@ -146,7 +152,7 @@ max_value = 15.0
 step = 1.0
 show_percentage = false
 
-[node name="ArmorLbl" type="Label" parent="Attributes/ArmorBar"]
+[node name="ArmorLbl" type="Label" parent="GUI/Attributes/ArmorBar"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -167,7 +173,7 @@ text = "0/15"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DeathIcon" type="TextureRect" parent="Attributes"]
+[node name="DeathIcon" type="TextureRect" parent="GUI/Attributes"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -183,6 +189,42 @@ offset_bottom = 35.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("5_m0ooc")
+
+[node name="lblPlayerName" type="Label" parent="GUI/Attributes"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = 40.0
+offset_right = 20.0
+offset_bottom = 62.3333
+grow_horizontal = 2
+grow_vertical = 2
+text = "name"
+horizontal_alignment = 1
+
+[node name="Highlighter" type="ReferenceRect" parent="GUI"]
+visible = false
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -55.0
+offset_top = -55.0
+offset_right = 15.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+border_color = Color(1, 1, 1, 1)
+border_width = 3.0
+editor_only = false
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = 2

@@ -3,6 +3,7 @@ extends Area2D
 ## MULTIPLAYER
 @onready var authority = $MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
 @onready var player_data = GameManager.Players[multiplayer.get_unique_id()]
+@onready var player_id = player_data["id"]
 
 ## GET NODES
 @onready var enemies: Array = $"../../Enemies".get_children()
@@ -59,14 +60,15 @@ var dice_result: int = 0
 
 func _ready() -> void:
 	$MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
-	set_class_texture(player_data["class"])
+	#set_class_texture()
 	
 	await get_tree().create_timer(0.1).timeout
-	snap_to_nearest_tile()
-	$Camera2D.position = global_position
-	print("haha: ", player_data)
+	#print("haha: ", player_id)
 	#%HealthLbl.max_value = max_health
 	#%ArmorLbl.max_value = max_armor
+	snap_to_nearest_tile()
+	$Camera2D.position = global_position
+	%lblPlayerName.text = name #set name to playerID
 
 func _process(_delta) -> void:
 	var n = calculate_mouse_pos()
@@ -96,7 +98,7 @@ func _input_event(_viewport, event, _shape_idx): # Mouse Drag&Drop
 			snap_to_nearest_tile()
 
 func _input(event: InputEvent) -> void:
-	if authority:
+	if is_multiplayer_authority():
 		if turn and chat_inactive and movement:
 			if event.is_action_pressed("ui_up"):
 				move(Vector2.UP)
@@ -301,14 +303,18 @@ func snap_to_nearest_tile():
 	var closest_tile = tileMap_ground.local_to_map(global_position)
 	global_position = tileMap_ground.map_to_local(closest_tile)
 
-func set_class_texture(selected_class: String):
-	match selected_class:
-		"knighter":
-			sprite.texture = preload("res://Characters/PCs/Knighter.png")
-		"ranger":
-			sprite.texture = preload("res://Characters/PCs/Ranger.png")
-		_:
-			print("Unknown class: " + selected_class)
+#@rpc("any_peer", "call_local")
+#func set_class_texture():
+	#if is_multiplayer_authority():
+		#print("Setting class texture for player: ", multiplayer.get_unique_id())
+		#print("Class selected: ", player_data["class"])
+		#match player_data["class"]:
+			#"knighter":
+				#sprite.texture = preload("res://Characters/PCs/Knighter.png")
+			#"ranger":
+				#sprite.texture = preload("res://Characters/PCs/Ranger.png")
+			#_:
+				#print("Unknown class: " + selected_class)
 
 ## SIGNALS
 
