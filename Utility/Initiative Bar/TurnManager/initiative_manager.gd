@@ -11,7 +11,7 @@ func _ready() -> void:
 		emit_inititative_order()
 
 func emit_inititative_order():
-	await get_tree().create_timer(1.1).timeout
+	await get_tree().process_frame
 	enemies = $"../Combatants/Enemies".get_children()
 	allies = $"../Combatants/Allies".get_children()
 	var characters = enemies + allies
@@ -28,39 +28,42 @@ func emit_inititative_order():
 	# Print name and their rolled initiative
 	#for entry in initiative_order:
 		#print("%s: %d" % [entry["name"], entry["initiative"]])
+	await get_tree().create_timer(2).timeout
 	start_turns()
 
-@rpc("authority", "call_local", "reliable")
+#@rpc("authority", "call_local", "reliable")
 func start_turns() -> void:
 	# Loop through the initiative order
 	for combatant in initiative_order:
 		var character = find_combatant_by_name(combatant["name"])
 		if character.is_in_group("enemy"):
-			#print(combatant["name"], " initiative: ", combatant["initiative"])
-			enemy_turn_start(character)
+			continue
+			print(combatant["name"], " initiative: ", combatant["initiative"])
+			enemy_turn_start.rpc(character)
 			character.act()  # Call the act function on the active combatant
 			await UiEventBus.turn_end # Wait before the next turn
 		elif character.is_in_group("player"):
-			ally_turn_start(character)
-			await UiEventBus.turn_end
+			ally_turn_start.rpc_id(character.player_id, character.name)
+			await get_tree().create_timer(10).timeout
+			#await UiEventBus.turn_end
+			print("came here")
 			character.turn = false
-	start_turns.rpc()
+	start_turns()
 
-
-func find_combatant_by_name(char_name: String) -> Node:
-	var characters = enemies + allies
-	for character in characters:
-		if character.name == char_name:
-			return character
-	return null
-
-
-func ally_turn_start(player):
+@rpc("any_peer", "call_local", "reliable")
+func ally_turn_start(player_name):
+	print("player turn start: ", player_name)
+	var player = find_combatant_by_name(player_name)
+	print("found player: ", player)
 	player.turn = true
 	player.movement = 1
 	player.rolls = 1
 	player.end_turn_button.disabled = false
 	print_rich("[color=#ADD8E6]Ally turn:[/color] %s" % player.name)
+
+func find_combatant_by_name(char_name: String) -> Node:
+	var characters_root = get_tree().root.get_node("World/Combatants")
+	return characters_root.find_child(char_name, true, false)
 
 func enemy_turn_start(enemy):
 	enemy.movement = 2

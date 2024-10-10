@@ -17,6 +17,7 @@ func _ready(): # Multiplayer Spawn & Authority?
 	for i in GameManager.Players:
 		var currentPlayer = PlayerScene.instantiate()
 		currentPlayer.name = str(GameManager.Players[i].id)
+		currentPlayer.player_id = str(GameManager.Players[i].id).to_int()
 		allies.add_child(currentPlayer)
 		
 		
@@ -25,10 +26,11 @@ func _ready(): # Multiplayer Spawn & Authority?
 		match player_class:
 			"knighter":
 				currentPlayer.sprite.texture = preload("res://Characters/PCs/Knighter.png")
+				currentPlayer.initiative = "1d99999"
 			"ranger":
 				currentPlayer.sprite.texture = preload("res://Characters/PCs/Ranger.png")
 		
-		
+		# Set spawn position
 		for spawn in get_tree().get_nodes_in_group("PlayerSpawnPoint"):
 			if spawn.name == str(index):
 				currentPlayer.global_position = spawn.global_position

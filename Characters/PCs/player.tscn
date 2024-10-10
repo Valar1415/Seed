@@ -8,6 +8,17 @@
 [ext_resource type="Texture2D" uid="uid://cjd24kt8iifgi" path="res://temp/X.png" id="5_m0ooc"]
 [ext_resource type="Texture2D" uid="uid://cgrgwkn0bil3o" path="res://temp/Knighter_Portrait.png" id="6_7wpbj"]
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_j5j14"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:player_data")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:player_id")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vaaew"]
 size = Vector2(70, 70)
 
@@ -39,15 +50,15 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_j5j14"]
-properties/0/path = NodePath(".:position")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-
 [node name="Player" type="Area2D" groups=["player"]]
 z_index = 5
 collision_mask = 6
 script = ExtResource("1_e5ccn")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_interval = 0.1
+delta_interval = 0.1
+replication_config = SubResource("SceneReplicationConfig_j5j14")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_ccq13")
@@ -70,13 +81,13 @@ visible = false
 top_level = true
 texture = ExtResource("3_57v36")
 
-[node name="GUI" type="Control" parent="."]
+[node name="GUI_Global" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Attributes" type="Control" parent="GUI"]
+[node name="Attributes" type="Control" parent="GUI_Global"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -91,7 +102,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="HealthBar" type="ProgressBar" parent="GUI/Attributes"]
+[node name="HealthBar" type="ProgressBar" parent="GUI_Global/Attributes"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 7
@@ -111,7 +122,7 @@ step = 1.0
 value = 100.0
 show_percentage = false
 
-[node name="HealthLbl" type="Label" parent="GUI/Attributes/HealthBar"]
+[node name="HealthLbl" type="Label" parent="GUI_Global/Attributes/HealthBar"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -132,7 +143,7 @@ text = "100/100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ArmorBar" type="ProgressBar" parent="GUI/Attributes"]
+[node name="ArmorBar" type="ProgressBar" parent="GUI_Global/Attributes"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 7
@@ -152,7 +163,7 @@ max_value = 15.0
 step = 1.0
 show_percentage = false
 
-[node name="ArmorLbl" type="Label" parent="GUI/Attributes/ArmorBar"]
+[node name="ArmorLbl" type="Label" parent="GUI_Global/Attributes/ArmorBar"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -173,7 +184,7 @@ text = "0/15"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DeathIcon" type="TextureRect" parent="GUI/Attributes"]
+[node name="DeathIcon" type="TextureRect" parent="GUI_Global/Attributes"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -190,7 +201,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("5_m0ooc")
 
-[node name="lblPlayerName" type="Label" parent="GUI/Attributes"]
+[node name="lblPlayerName" type="Label" parent="GUI_Global/Attributes"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -207,7 +218,7 @@ grow_vertical = 2
 text = "name"
 horizontal_alignment = 1
 
-[node name="Highlighter" type="ReferenceRect" parent="GUI"]
+[node name="Highlighter" type="ReferenceRect" parent="GUI_Global"]
 visible = false
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 1
@@ -226,10 +237,11 @@ border_color = Color(1, 1, 1, 1)
 border_width = 3.0
 editor_only = false
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="GUI_Local" type="CanvasLayer" parent="."]
 layer = 2
+visible = false
 
-[node name="EndTurnButton" type="Button" parent="CanvasLayer"]
+[node name="EndTurnButton" type="Button" parent="GUI_Local"]
 unique_name_in_owner = true
 anchors_preset = 3
 anchor_left = 1.0
@@ -247,49 +259,49 @@ focus_mode = 0
 disabled = true
 text = "END TURN"
 
-[node name="Abilities" type="HBoxContainer" parent="CanvasLayer"]
+[node name="Abilities" type="HBoxContainer" parent="GUI_Local"]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -20.0
+offset_left = -294.5
 offset_top = -40.0
-offset_right = 20.0
+offset_right = 294.5
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="A1" type="Button" parent="CanvasLayer/Abilities"]
+[node name="A1" type="Button" parent="GUI_Local/Abilities"]
 layout_mode = 2
 focus_mode = 0
 text = "Charge"
 
-[node name="A2" type="Button" parent="CanvasLayer/Abilities"]
+[node name="A2" type="Button" parent="GUI_Local/Abilities"]
 layout_mode = 2
 focus_mode = 0
 text = "Shield & Sword"
 
-[node name="A3" type="Button" parent="CanvasLayer/Abilities"]
+[node name="A3" type="Button" parent="GUI_Local/Abilities"]
 layout_mode = 2
 focus_mode = 0
 text = "Defend"
 
-[node name="A4" type="Button" parent="CanvasLayer/Abilities"]
+[node name="A4" type="Button" parent="GUI_Local/Abilities"]
 layout_mode = 2
 focus_mode = 0
 text = "Wide Slash"
 
-[node name="A5" type="Button" parent="CanvasLayer/Abilities"]
+[node name="A5" type="Button" parent="GUI_Local/Abilities"]
 layout_mode = 2
 focus_mode = 0
 text = "Defense Up"
 
-[node name="A6" type="Button" parent="CanvasLayer/Abilities"]
+[node name="A6" type="Button" parent="GUI_Local/Abilities"]
 layout_mode = 2
 focus_mode = 0
 text = "Powerful Strike"
 
-[node name="Rolls&Movement" type="PanelContainer" parent="CanvasLayer"]
+[node name="Rolls&Movement" type="PanelContainer" parent="GUI_Local"]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -299,46 +311,46 @@ offset_right = -152.0
 offset_bottom = 144.0
 grow_horizontal = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Rolls&Movement"]
+[node name="MarginContainer" type="MarginContainer" parent="GUI_Local/Rolls&Movement"]
 layout_mode = 2
 theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 12
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Rolls&Movement/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI_Local/Rolls&Movement/MarginContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 
-[node name="Rolls" type="Label" parent="CanvasLayer/Rolls&Movement/MarginContainer/VBoxContainer"]
+[node name="Rolls" type="Label" parent="GUI_Local/Rolls&Movement/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Rolls: 1"
 
-[node name="Movement" type="Label" parent="CanvasLayer/Rolls&Movement/MarginContainer/VBoxContainer"]
+[node name="Movement" type="Label" parent="GUI_Local/Rolls&Movement/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Movement: 1
 "
 
-[node name="Portrait&Debuffs" type="PanelContainer" parent="CanvasLayer"]
+[node name="Portrait&Debuffs" type="PanelContainer" parent="GUI_Local"]
 custom_minimum_size = Vector2(196, 191.685)
 offset_left = 20.0
 offset_top = 20.0
 offset_right = 140.0
 offset_bottom = 140.0
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Portrait&Debuffs"]
+[node name="MarginContainer" type="MarginContainer" parent="GUI_Local/Portrait&Debuffs"]
 layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Portrait&Debuffs/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI_Local/Portrait&Debuffs/MarginContainer"]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Portrait&Debuffs/MarginContainer/VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="GUI_Local/Portrait&Debuffs/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -346,52 +358,47 @@ texture = ExtResource("6_7wpbj")
 expand_mode = 1
 stretch_mode = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Portrait&Debuffs/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="GUI_Local/Portrait&Debuffs/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(188, 60)
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Portrait&Debuffs/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="GUI_Local/Portrait&Debuffs/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Portrait&Debuffs/MarginContainer/VBoxContainer/HBoxContainer/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="GUI_Local/Portrait&Debuffs/MarginContainer/VBoxContainer/HBoxContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 2
 
-[node name="Buffs" type="GridContainer" parent="CanvasLayer/Portrait&Debuffs/MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer"]
+[node name="Buffs" type="GridContainer" parent="GUI_Local/Portrait&Debuffs/MarginContainer/VBoxContainer/HBoxContainer/PanelContainer/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 columns = 4
 
-[node name="PanelContainer2" type="PanelContainer" parent="CanvasLayer/Portrait&Debuffs/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="PanelContainer2" type="PanelContainer" parent="GUI_Local/Portrait&Debuffs/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Portrait&Debuffs/MarginContainer/VBoxContainer/HBoxContainer/PanelContainer2"]
+[node name="MarginContainer" type="MarginContainer" parent="GUI_Local/Portrait&Debuffs/MarginContainer/VBoxContainer/HBoxContainer/PanelContainer2"]
 layout_mode = 2
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 2
 
-[node name="Debuffs" type="GridContainer" parent="CanvasLayer/Portrait&Debuffs/MarginContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer"]
+[node name="Debuffs" type="GridContainer" parent="GUI_Local/Portrait&Debuffs/MarginContainer/VBoxContainer/HBoxContainer/PanelContainer2/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 columns = 4
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_interval = 0.1
-delta_interval = 0.1
-replication_config = SubResource("SceneReplicationConfig_j5j14")
 
 [connection signal="input_event" from="." to="." method="_input_event"]
-[connection signal="pressed" from="CanvasLayer/EndTurnButton" to="." method="_on_end_turn_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/Abilities/A1" to="." method="_on_a_1_pressed"]
-[connection signal="pressed" from="CanvasLayer/Abilities/A2" to="." method="_on_a_2_pressed"]
-[connection signal="pressed" from="CanvasLayer/Abilities/A3" to="." method="_on_a_3_pressed"]
-[connection signal="pressed" from="CanvasLayer/Abilities/A4" to="." method="_on_a_4_pressed"]
-[connection signal="pressed" from="CanvasLayer/Abilities/A5" to="." method="_on_a_5_pressed"]
-[connection signal="pressed" from="CanvasLayer/Abilities/A6" to="." method="_on_a_6_pressed"]
+[connection signal="pressed" from="GUI_Local/EndTurnButton" to="." method="_on_end_turn_button_pressed"]
+[connection signal="pressed" from="GUI_Local/Abilities/A1" to="." method="_on_a_1_pressed"]
+[connection signal="pressed" from="GUI_Local/Abilities/A2" to="." method="_on_a_2_pressed"]
+[connection signal="pressed" from="GUI_Local/Abilities/A3" to="." method="_on_a_3_pressed"]
+[connection signal="pressed" from="GUI_Local/Abilities/A4" to="." method="_on_a_4_pressed"]
+[connection signal="pressed" from="GUI_Local/Abilities/A5" to="." method="_on_a_5_pressed"]
+[connection signal="pressed" from="GUI_Local/Abilities/A6" to="." method="_on_a_6_pressed"]

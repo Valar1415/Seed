@@ -1,9 +1,13 @@
 extends Area2D
 
 ## MULTIPLAYER
-@onready var authority = $MultiplayerSynchronizer.get_multiplayer_authority() == multiplayer.get_unique_id()
+@onready var authority = get_multiplayer_authority() == multiplayer.get_unique_id()
 @onready var player_data = GameManager.Players[multiplayer.get_unique_id()]
-@onready var player_id = player_data["id"]
+@export var player_id: int:
+	set(id):
+		#print("Setting player_id for player: ", id)
+		player_id = id
+		set_multiplayer_authority(id)
 
 ## GET NODES
 @onready var enemies: Array = $"../../Enemies".get_children()
@@ -59,16 +63,22 @@ var dice_result: int = 0
 
 
 func _ready() -> void:
-	$MultiplayerSynchronizer.set_multiplayer_authority(str(name).to_int())
-	#set_class_texture()
+	await get_tree().process_frame
 	
-	await get_tree().create_timer(0.1).timeout
-	#print("haha: ", player_id)
+	if is_multiplayer_authority():
+		print("Player ID: ", player_id, " has authority.")
+	else:
+		print("Player ID: ", player_id, " does not have authority.")
+	
 	#%HealthLbl.max_value = max_health
 	#%ArmorLbl.max_value = max_armor
 	snap_to_nearest_tile()
 	$Camera2D.position = global_position
 	%lblPlayerName.text = name #set name to playerID
+	
+	if is_multiplayer_authority():
+		reveal_local_UI()
+
 
 func _process(_delta) -> void:
 	var n = calculate_mouse_pos()
@@ -303,18 +313,9 @@ func snap_to_nearest_tile():
 	var closest_tile = tileMap_ground.local_to_map(global_position)
 	global_position = tileMap_ground.map_to_local(closest_tile)
 
-#@rpc("any_peer", "call_local")
-#func set_class_texture():
-	#if is_multiplayer_authority():
-		#print("Setting class texture for player: ", multiplayer.get_unique_id())
-		#print("Class selected: ", player_data["class"])
-		#match player_data["class"]:
-			#"knighter":
-				#sprite.texture = preload("res://Characters/PCs/Knighter.png")
-			#"ranger":
-				#sprite.texture = preload("res://Characters/PCs/Ranger.png")
-			#_:
-				#print("Unknown class: " + selected_class)
+func reveal_local_UI():
+	$GUI_Local.show()
+
 
 ## SIGNALS
 

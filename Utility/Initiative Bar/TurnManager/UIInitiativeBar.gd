@@ -44,7 +44,7 @@ func add_initiative_bar(order) -> void:
 	add_child(line_instance)
 
 
-#@rpc("authority", "call_remote")
+@rpc("any_peer", "call_local", "reliable")
 func sort_initiative_bar(_character):
 	if get_child_count() > 0:
 		var first_child = get_child(0)
