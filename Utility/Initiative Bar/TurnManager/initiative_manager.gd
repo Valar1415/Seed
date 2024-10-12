@@ -9,6 +9,7 @@ var initiative_order: Array = []
 func _ready() -> void:
 	if multiplayer.is_server():
 		emit_inititative_order()
+	
 
 func emit_inititative_order():
 	await get_tree().process_frame
@@ -20,7 +21,7 @@ func emit_inititative_order():
 	for character in characters:
 		var char_int = DiceRoll.roll(character.initiative)
 		initiative_order.append({"node": character, "name": character.name, "initiative": char_int})  # Store as dictionary
-
+	
 	# Sort in descending order
 	initiative_order.sort_custom(func(a, b): return a["initiative"] > b["initiative"])
 	
@@ -41,11 +42,11 @@ func start_turns() -> void:
 			print(character["name"], " initiative: ", character["initiative"])
 			enemy_turn_start(character)
 			character.act.rpc()  # Call the act function on the active character
-			await UiEventBus.turn_end # Wait before the next turn
+			await character.turn_end # Wait before the next turn
 			print("Passed await, Wolf")
 		elif character.is_in_group("player"):
 			ally_turn_start.rpc_id(character.player_id, character.name)
-			await UiEventBus.turn_end
+			await character.turn_end
 			print("Passed await, Player")
 			character.turn = false
 	start_turns()

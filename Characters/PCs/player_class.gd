@@ -1,4 +1,8 @@
 extends Area2D
+class_name Player
+
+## SIGNALS
+signal turn_end
 
 ## MULTIPLAYER
 @onready var authority = get_multiplayer_authority() == multiplayer.get_unique_id()
@@ -12,7 +16,6 @@ extends Area2D
 ## GET NODES
 @onready var enemies: Array = $"../../Enemies".get_children()
 @onready var sprite: Sprite2D = $Sprite2D
-
 
 ## ENVIRONMENT
 @onready var tile_map: Node2D = $"../../../TileMap"
@@ -59,9 +62,6 @@ var current_ability: Abilities = Abilities.A0
 var targeting_active: bool = false
 var dice_result: int = 0
 
-
-
-
 func _ready() -> void:
 	await get_tree().process_frame
 	
@@ -76,9 +76,9 @@ func _ready() -> void:
 	$Camera2D.position = global_position
 	%lblPlayerName.text = name #set name to playerID
 	
+	
 	if is_multiplayer_authority():
 		reveal_local_UI()
-
 
 func _process(_delta) -> void:
 	var n = calculate_mouse_pos()
@@ -118,7 +118,7 @@ func _input(event: InputEvent) -> void:
 				move(Vector2.LEFT)
 			elif  event.is_action_pressed("ui_right"):
 				move(Vector2.RIGHT)
-		
+			
 			if event.is_action_pressed("mouse_left_click") and targeting_active:
 				# Calculate the mouse position in the TileMap's local space
 				var n = calculate_mouse_pos()
@@ -133,7 +133,7 @@ func _input(event: InputEvent) -> void:
 				var range_atk_collider = raycast.get_collider()
 				
 				# Execute the ability with the target tile position
-				if !range_atk_collider.is_in_group("obstacle"): # Check if ranged attack is blocked
+				if range_atk_collider == null or !range_atk_collider.is_in_group("obstacle"): # Check if ranged attack is blocked
 					if rolls > 0:
 							execute_ability(current_ability, target_pos, target_enemy)
 				
@@ -171,43 +171,23 @@ func move(direction: Vector2):
 	global_position = tileMap_ground.map_to_local(target_tile)
 	movement -= 1
 
+
 func execute_ability(ability: Abilities, target_pos: Vector2, target_enemy) -> void:
 	print("Ability executed at position: ", target_pos)
 	print("target enemy name: ", target_enemy)
 	match ability:
 		Abilities.A1:
-			var damage = roll_dice("1d12 + 1d6")
-			if target_enemy != null:
-				target_enemy.take_damage(damage)
-			rolls -= 1
+			pass
 		Abilities.A2:
-			var damage = roll_dice("3d4")
-			var armor_ = roll_dice("2d6")
-			if target_enemy != null:
-				target_enemy.take_damage(damage)
-			gain_armor(armor_)
-			rolls -= 1
+			pass
 		Abilities.A3:
-			var shield_icon = debuffIcon.instantiate()
-			%Buffs.add_child(shield_icon)
-			shield_icon.texture = load("res://temp/Shield.png")
-			rolls -= 1
+			pass
 		Abilities.A4:
-			var damage = roll_dice("1d12 + 1d6")
-			if target_enemy != null:
-				target_enemy.take_damage(damage)
-			rolls -= 1
+			pass
 		Abilities.A5:
-			var armor_ = roll_dice("4d6")
-			gain_armor(armor_)
-			rolls -= 1
+			pass
 		Abilities.A6:
-			var damage = roll_dice("2d8 + 1d10 + 1d4")
-			if target_enemy != null:
-				target_enemy.take_damage(damage)
-			rolls -= 1
-
-
+			pass
 
 
 ## ATTRIBUTES
@@ -244,50 +224,6 @@ func take_damage(amount):
 	%ArmorLbl.text = str(armor, "/", max_armor)
 
 
-
-## ABILITIES
-
-func roll_dice(dice): 
-	var result = DiceRoll.roll(dice)
-	print(result)
-	if result != 0:
-		world.type_dice_result(result)
-		return result
-
-func _on_a_1_pressed() -> void:
-	#world.roll_dice("1d12 + 1d6")
-	target_icon.visible = true
-	targeting_active = true
-	current_ability = Abilities.A1
-
-func _on_a_2_pressed() -> void:
-	target_icon.visible = true
-	targeting_active = true
-	current_ability = Abilities.A2
-
-func _on_a_3_pressed() -> void:
-	current_ability = Abilities.A3
-	if rolls > 0:
-		execute_ability(current_ability, Vector2(0,0), Vector2(0,0))
-	pass
-
-func _on_a_4_pressed() -> void:
-	target_icon.visible = true
-	targeting_active = true
-	current_ability = Abilities.A4
-
-func _on_a_5_pressed() -> void:
-	current_ability = Abilities.A5
-	if rolls > 0:
-		execute_ability(current_ability, Vector2(0,0), Vector2(0,0))
-	pass
-
-func _on_a_6_pressed() -> void:
-	current_ability = Abilities.A6
-	target_icon.visible = true
-	targeting_active = true
-	pass
-
 ## MISC
 
 func find_enemy_on_tile(tile_pos: Vector2) -> Node:
@@ -317,15 +253,9 @@ func reveal_local_UI():
 	$GUI_Local.show()
 
 
-## SIGNALS
-
-func _on_end_turn_button_pressed() -> void:
-	end_turn_button.disabled = true
-	UiEventBus.turn_end.emit(self)
-
-
-func _on_message_focus_entered() -> void:
-	chat_inactive = false
-
-func _on_message_focus_exited() -> void:
-	chat_inactive = true
+func roll_dice(dice): 
+	var result = DiceRoll.roll(dice)
+	print(result)
+	if result != 0:
+		world.type_dice_result(result)
+		return result
