@@ -28,6 +28,7 @@ func _ready(): # Multiplayer Spawn & Authority?
 				currentPlayer.sprite.texture = preload("res://Characters/PCs/Knighter.png")
 				currentPlayer.initiative = "1d99999"
 			"ranger":
+				currentPlayer.initiative = "1d1"
 				currentPlayer.sprite.texture = preload("res://Characters/PCs/Ranger.png")
 		
 		# Set spawn position

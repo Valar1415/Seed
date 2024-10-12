@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://datrxqa6qokki"]
+[gd_scene load_steps=14 format=3 uid="uid://datrxqa6qokki"]
 
 [ext_resource type="Script" path="res://Characters/NPCs/wolf.gd" id="1_hss73"]
 [ext_resource type="Texture2D" uid="uid://2dtig25mr8rl" path="res://Characters/NPCs/Wolf.png" id="1_pv62c"]
@@ -6,6 +6,11 @@
 [ext_resource type="Texture2D" uid="uid://xgnsofidqvkm" path="res://temp/Target.png" id="3_yt5du"]
 [ext_resource type="Texture2D" uid="uid://cjd24kt8iifgi" path="res://temp/X.png" id="4_ijghc"]
 [ext_resource type="Script" path="res://Characters/NPCs/attributes.gd" id="4_pe0uw"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_yn6h2"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ryv6h"]
 size = Vector2(70, 70)
@@ -45,6 +50,11 @@ corner_radius_bottom_left = 4
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_hss73")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_interval = 0.1
+delta_interval = 0.1
+replication_config = SubResource("SceneReplicationConfig_yn6h2")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_pv62c")

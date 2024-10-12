@@ -38,6 +38,7 @@ func _ready():
 		#movement = 2
 		#act()
 
+@rpc("any_peer", "call_local", "reliable")
 func act():
 	set_tilemap_obstacle(false)
 	var target = pick_target()

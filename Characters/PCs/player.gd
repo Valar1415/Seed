@@ -35,22 +35,22 @@ var turn := false
 var is_dragging = false
 
 ## ATTRIBUTES
-var movement: int = 1:
+@export var movement: int = 1:
 	get: return movement
 	set(value):
 		movement = value
 		%Movement.text = str("Movement: ", value)
-var rolls: int = 1:
+@export var rolls: int = 1:
 	get: return rolls
 	set(value):
 		rolls = value
 		%Rolls.text = str("Rolls: ", value)
 
-var initiative := "1d6600"
-var max_health: int = 100
-var health: int = 100
-var max_armor: int = 15
-var armor: int = 0
+@export var initiative := "1d6600"
+@export var max_health: int = 100
+@export var health: int = 100
+@export var max_armor: int = 15
+@export var armor: int = 0
 
 ## ABILITIES
 enum Abilities {A0,A1,A2,A3,A4,A5,A6}
@@ -65,10 +65,10 @@ var dice_result: int = 0
 func _ready() -> void:
 	await get_tree().process_frame
 	
-	if is_multiplayer_authority():
-		print("Player ID: ", player_id, " has authority.")
-	else:
-		print("Player ID: ", player_id, " does not have authority.")
+	#if is_multiplayer_authority():
+		#print("Player ID: ", player_id, " has authority.")
+	#else:
+		#print("Player ID: ", player_id, " does not have authority.")
 	
 	#%HealthLbl.max_value = max_health
 	#%ArmorLbl.max_value = max_armor
@@ -322,6 +322,7 @@ func reveal_local_UI():
 func _on_end_turn_button_pressed() -> void:
 	end_turn_button.disabled = true
 	UiEventBus.turn_end.emit(self)
+
 
 func _on_message_focus_entered() -> void:
 	chat_inactive = false
