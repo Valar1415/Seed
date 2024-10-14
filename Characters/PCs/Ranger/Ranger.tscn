@@ -1,23 +1,26 @@
-[gd_scene load_steps=14 format=3 uid="uid://dtvrsm7py3m6y"]
+[gd_scene load_steps=14 format=3 uid="uid://dyekoyo1wi1wn"]
 
-[ext_resource type="Texture2D" uid="uid://b3442xm58r22h" path="res://Characters/PCs/Knighter.png" id="1_ccq13"]
-[ext_resource type="Script" path="res://Characters/PCs/Knighter.gd" id="1_e5ccn"]
-[ext_resource type="Texture2D" uid="uid://xgnsofidqvkm" path="res://temp/Target.png" id="3_57v36"]
-[ext_resource type="Script" path="res://Characters/PCs/camera_2d.gd" id="3_au01q"]
-[ext_resource type="FontFile" uid="uid://cv44u08rsmf26" path="res://temp/Aleo-Black.ttf" id="4_8d8qb"]
-[ext_resource type="Texture2D" uid="uid://cjd24kt8iifgi" path="res://temp/X.png" id="5_m0ooc"]
-[ext_resource type="Texture2D" uid="uid://cgrgwkn0bil3o" path="res://temp/Knighter_Portrait.png" id="6_7wpbj"]
+[ext_resource type="Script" path="res://Characters/PCs/Ranger/Ranger.gd" id="1_30svg"]
+[ext_resource type="Texture2D" uid="uid://dnxp837jin7xo" path="res://Characters/PCs/Ranger/Ranger.png" id="2_fi6hc"]
+[ext_resource type="Script" path="res://Characters/PCs/camera_2d.gd" id="3_gpdiw"]
+[ext_resource type="Texture2D" uid="uid://xgnsofidqvkm" path="res://temp/Target.png" id="4_vdfc8"]
+[ext_resource type="FontFile" uid="uid://cv44u08rsmf26" path="res://temp/Aleo-Black.ttf" id="5_8sytb"]
+[ext_resource type="Texture2D" uid="uid://cjd24kt8iifgi" path="res://temp/X.png" id="6_g6ej4"]
+[ext_resource type="Texture2D" uid="uid://v2uku1n4e7s8" path="res://Characters/PCs/Ranger/Ranger_Portrait.png" id="7_yad41"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_j5j14"]
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
-properties/0/replication_mode = 1
+properties/0/replication_mode = 2
 properties/1/path = NodePath(".:player_data")
 properties/1/spawn = true
 properties/1/replication_mode = 2
 properties/2/path = NodePath(".:player_id")
 properties/2/spawn = true
 properties/2/replication_mode = 2
+properties/3/path = NodePath(".:initiative")
+properties/3/spawn = true
+properties/3/replication_mode = 2
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vaaew"]
 size = Vector2(70, 70)
@@ -50,10 +53,10 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="Knighter" type="Area2D" groups=["player"]]
+[node name="Ranger" type="Area2D" groups=["player"]]
 z_index = 5
 collision_mask = 6
-script = ExtResource("1_e5ccn")
+script = ExtResource("1_30svg")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_interval = 0.1
@@ -61,7 +64,7 @@ delta_interval = 0.1
 replication_config = SubResource("SceneReplicationConfig_j5j14")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_ccq13")
+texture = ExtResource("2_fi6hc")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_vaaew")
@@ -74,12 +77,12 @@ collide_with_bodies = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
 top_level = true
-script = ExtResource("3_au01q")
+script = ExtResource("3_gpdiw")
 
 [node name="TargetIcon" type="Sprite2D" parent="."]
 visible = false
 top_level = true
-texture = ExtResource("3_57v36")
+texture = ExtResource("4_vdfc8")
 
 [node name="GUI_Global" type="Control" parent="."]
 layout_mode = 3
@@ -137,7 +140,7 @@ offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("4_8d8qb")
+theme_override_fonts/font = ExtResource("5_8sytb")
 theme_override_font_sizes/font_size = 8
 text = "100/100"
 horizontal_alignment = 1
@@ -178,7 +181,7 @@ offset_bottom = 12.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("4_8d8qb")
+theme_override_fonts/font = ExtResource("5_8sytb")
 theme_override_font_sizes/font_size = 8
 text = "0/15"
 horizontal_alignment = 1
@@ -199,7 +202,7 @@ offset_right = 35.0
 offset_bottom = 35.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("5_m0ooc")
+texture = ExtResource("6_g6ej4")
 
 [node name="lblPlayerName" type="Label" parent="GUI_Global/Attributes"]
 unique_name_in_owner = true
@@ -241,24 +244,6 @@ editor_only = false
 layer = 2
 visible = false
 
-[node name="EndTurnButton" type="Button" parent="GUI_Local"]
-unique_name_in_owner = true
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -407.0
-offset_top = -123.0
-offset_right = -155.0
-offset_bottom = -69.0
-grow_horizontal = 0
-grow_vertical = 0
-size_flags_vertical = 8
-focus_mode = 0
-disabled = true
-text = "END TURN"
-
 [node name="Abilities" type="HBoxContainer" parent="GUI_Local"]
 anchors_preset = 7
 anchor_left = 0.5
@@ -274,32 +259,32 @@ grow_vertical = 0
 [node name="A1" type="Button" parent="GUI_Local/Abilities"]
 layout_mode = 2
 focus_mode = 0
-text = "Charge"
+text = "Pin Down"
 
 [node name="A2" type="Button" parent="GUI_Local/Abilities"]
 layout_mode = 2
 focus_mode = 0
-text = "Shield & Sword"
+text = "Double Shot"
 
 [node name="A3" type="Button" parent="GUI_Local/Abilities"]
 layout_mode = 2
 focus_mode = 0
-text = "Defend"
+text = "Band Aid"
 
 [node name="A4" type="Button" parent="GUI_Local/Abilities"]
 layout_mode = 2
 focus_mode = 0
-text = "Wide Slash"
+text = "Piercing Shot"
 
 [node name="A5" type="Button" parent="GUI_Local/Abilities"]
 layout_mode = 2
 focus_mode = 0
-text = "Defense Up"
+text = "Preparation"
 
 [node name="A6" type="Button" parent="GUI_Local/Abilities"]
 layout_mode = 2
 focus_mode = 0
-text = "Powerful Strike"
+text = "Powerful Shot"
 
 [node name="Rolls&Movement" type="PanelContainer" parent="GUI_Local"]
 anchors_preset = 1
@@ -354,7 +339,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 size_flags_horizontal = 4
-texture = ExtResource("6_7wpbj")
+texture = ExtResource("7_yad41")
 expand_mode = 1
 stretch_mode = 4
 
@@ -395,7 +380,6 @@ layout_mode = 2
 columns = 4
 
 [connection signal="input_event" from="." to="." method="_input_event"]
-[connection signal="pressed" from="GUI_Local/EndTurnButton" to="." method="_on_end_turn_button_pressed"]
 [connection signal="pressed" from="GUI_Local/Abilities/A1" to="." method="_on_a_1_pressed"]
 [connection signal="pressed" from="GUI_Local/Abilities/A2" to="." method="_on_a_2_pressed"]
 [connection signal="pressed" from="GUI_Local/Abilities/A3" to="." method="_on_a_3_pressed"]

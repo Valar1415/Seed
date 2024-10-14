@@ -1,5 +1,6 @@
-[gd_scene load_steps=14 format=4 uid="uid://5ssn378etleb"]
+[gd_scene load_steps=15 format=4 uid="uid://5ssn378etleb"]
 
+[ext_resource type="PackedScene" uid="uid://dtvrsm7py3m6y" path="res://Characters/PCs/Knighter.tscn" id="1_8siv5"]
 [ext_resource type="TileSet" uid="uid://dhy45riix4ao6" path="res://Environment/Tile Sets/Ground.tres" id="1_33e52"]
 [ext_resource type="TileSet" uid="uid://dmji8m5imu7ws" path="res://Environment/Tile Sets/Bounds.tres" id="1_douwk"]
 [ext_resource type="Script" path="res://world.gd" id="1_o32pj"]
@@ -7,15 +8,16 @@
 [ext_resource type="TileSet" uid="uid://bwdkad5r1bl6f" path="res://Environment/Tile Sets/Houses.tres" id="2_n4sac"]
 [ext_resource type="Script" path="res://AStar_Pathfinding.gd" id="2_ovv0h"]
 [ext_resource type="Script" path="res://Utility/Initiative Bar/TurnManager/initiative_manager.gd" id="3_r5ven"]
+[ext_resource type="PackedScene" uid="uid://datrxqa6qokki" path="res://Characters/NPCs/wolf.tscn" id="5_8ysdf"]
 [ext_resource type="FontFile" uid="uid://cv44u08rsmf26" path="res://temp/Aleo-Black.ttf" id="11_8jqm7"]
 [ext_resource type="Script" path="res://Utility/Initiative Bar/TurnManager/UIInitiativeBar.gd" id="11_txjda"]
 [ext_resource type="PackedScene" uid="uid://c3fvwrbvnqvsr" path="res://Utility/Initiative Bar/IntPlaceholderSprite.tscn" id="12_ia5ej"]
 [ext_resource type="PackedScene" uid="uid://dpa16gkjyvqch" path="res://Utility/Initiative Bar/IntPlaceholderCircle.tscn" id="13_2ups8"]
-[ext_resource type="Script" path="res://Utility/Initiative Bar/TurnManager/end_turn_button.gd" id="13_hty8s"]
 [ext_resource type="PackedScene" uid="uid://ggkes6xjqlfn" path="res://Utility/Initiative Bar/IntPlaceholderTurnBreak.tscn" id="15_1ghjx"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_o32pj")
+PlayerScene = ExtResource("1_8siv5")
 
 [node name="PathDebug" type="Line2D" parent="."]
 script = ExtResource("2_ff5n6")
@@ -41,6 +43,15 @@ tile_set = ExtResource("2_n4sac")
 script = ExtResource("3_r5ven")
 
 [node name="Enemies" type="Node2D" parent="Combatants"]
+
+[node name="Wolf" parent="Combatants/Enemies" instance=ExtResource("5_8ysdf")]
+position = Vector2(392, 114)
+
+[node name="Wolf2" parent="Combatants/Enemies" instance=ExtResource("5_8ysdf")]
+position = Vector2(313, 254)
+
+[node name="Wolf3" parent="Combatants/Enemies" instance=ExtResource("5_8ysdf")]
+position = Vector2(452, 126)
 
 [node name="Allies" type="Node2D" parent="Combatants"]
 
@@ -145,15 +156,4 @@ theme_override_fonts/font = ExtResource("11_8jqm7")
 theme_override_font_sizes/font_size = 16
 text = "SEND"
 
-[node name="EndTurnButton" type="Button" parent="GUI"]
-unique_name_in_owner = true
-offset_left = 415.0
-offset_top = 544.0
-offset_right = 623.0
-offset_bottom = 608.0
-text = "end
-"
-script = ExtResource("13_hty8s")
-
 [connection signal="pressed" from="GUI/PanelContainer/MarginContainer/VBoxContainer/Send" to="." method="_on_send_pressed"]
-[connection signal="pressed" from="GUI/EndTurnButton" to="Combatants" method="_on_end_turn_pressed"]

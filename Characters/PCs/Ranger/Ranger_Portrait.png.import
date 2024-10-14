@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b3442xm58r22h"
-path="res://.godot/imported/Knighter.png-ab39d926c0cbb43f38ffa1ede9cc1143.ctex"
+uid="uid://v2uku1n4e7s8"
+path="res://.godot/imported/Ranger_Portrait.png-b9f8d418f20a867eff985b63185eeede.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Characters/PCs/Knighter.png"
-dest_files=["res://.godot/imported/Knighter.png-ab39d926c0cbb43f38ffa1ede9cc1143.ctex"]
+source_file="res://Characters/PCs/Ranger/Ranger_Portrait.png"
+dest_files=["res://.godot/imported/Ranger_Portrait.png-b9f8d418f20a867eff985b63185eeede.ctex"]
 
 [params]
 

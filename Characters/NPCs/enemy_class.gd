@@ -23,6 +23,11 @@ var atk_targets: Array = []
 @export var max_armor: int = 15
 @export var armor: int = 0
 
+## STATES
+enum States {ALIVE, CORPSE}
+
+var current_state: States = States.ALIVE
+
 ## PATHFINDING
 @onready var astar = tile_map.astar
 var path: Array[Vector2i]
@@ -44,6 +49,9 @@ func _ready():
 
 @rpc("any_peer", "call_local", "reliable")
 func act():
+	if current_state == States.CORPSE: # Not good, rather get him out of init array
+		return
+	
 	set_tilemap_obstacle(false)
 	var target = pick_target()
 	print_rich("[color=red][b]%s:[/b][/color] %s" % ["Enemy target", target.name])
@@ -163,7 +171,7 @@ func get_path_to_target(target):
 		tile_map.ground.local_to_map(target.position)
 	).slice(1) # Ignore first tile 
 
-#func act()->void:
+#func act()->void: # Nešto u vezi movementa
 	  #if bSawPlayer:
 		  ## This variable holds an array
 		  ## with the path towards the player.
@@ -193,11 +201,17 @@ func take_damage(amount):
 	
 	if health <= 0:
 		health = 0
-		%DeathIcon.show()
+		die.rpc()
 	%HealthBar.value = health
 	%HealthLbl.text = str(health, "/", max_health)
 	%ArmorBar.value = armor
 	%ArmorLbl.text = str(armor, "/", max_armor)
+
+@rpc("any_peer", "call_local", "reliable")
+func die():
+	%DeathIcon.show()
+	current_state = States.CORPSE
+	UiEventBus.character_death.emit(self)
 
 ## OVO JE BILO ZA RAYCASTTRACKING MOVEMENT
 #var second_pos = tile_map.ground.map_to_local(path[1]) # For attacks

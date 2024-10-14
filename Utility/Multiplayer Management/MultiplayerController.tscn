@@ -1,10 +1,11 @@
 [gd_scene load_steps=6 format=3 uid="uid://dspcifktf4fm8"]
 
 [ext_resource type="Script" path="res://Utility/Multiplayer Management/MultiplayerController.gd" id="1_q27r7"]
-[ext_resource type="Texture2D" uid="uid://b3442xm58r22h" path="res://Characters/PCs/Knighter.png" id="2_wj2ui"]
-[ext_resource type="Texture2D" uid="uid://dnxp837jin7xo" path="res://Characters/PCs/Ranger.png" id="3_87lb6"]
-[ext_resource type="Texture2D" uid="uid://ba2vovnx8jg60" path="res://Characters/PCs/KnighterHover.png" id="3_x6ph7"]
-[ext_resource type="Texture2D" uid="uid://bwmdhrbt0uexu" path="res://Characters/PCs/RangerHover.png" id="5_1xgic"]
+[ext_resource type="Texture2D" uid="uid://b3442xm58r22h" path="res://Characters/PCs/Knighter/Knighter.png" id="2_wj2ui"]
+[ext_resource type="Texture2D" uid="uid://dnxp837jin7xo" path="res://Characters/PCs/Ranger/Ranger.png" id="3_87lb6"]
+[ext_resource type="Texture2D" uid="uid://ba2vovnx8jg60" path="res://Characters/PCs/Knighter/KnighterHover.png" id="3_x6ph7"]
+[ext_resource type="Texture2D" uid="uid://bwmdhrbt0uexu" path="res://Characters/PCs/Ranger/RangerHover.png" id="5_1xgic"]
+
 
 [node name="MultiplayerController" type="Control"]
 layout_mode = 3

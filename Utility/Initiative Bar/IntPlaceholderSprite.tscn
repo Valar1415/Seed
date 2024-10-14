@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=3 uid="uid://c3fvwrbvnqvsr"]
 
-[ext_resource type="Texture2D" uid="uid://b3442xm58r22h" path="res://Characters/PCs/Knighter.png" id="1_twcpw"]
+[ext_resource type="Texture2D" uid="uid://b3442xm58r22h" path="res://Characters/PCs/Knighter/Knighter.png" id="1_twcpw"]
 [ext_resource type="Script" path="res://Utility/Initiative Bar/int_sprite_hover.gd" id="2_34h8m"]
 
-[node name="1" type="TextureRect"]
+[node name="1" type="TextureRect" groups=["character_texture"]]
 custom_minimum_size = Vector2(0, 80)
 size_flags_horizontal = 4
 size_flags_vertical = 4

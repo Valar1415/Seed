@@ -1,6 +1,5 @@
 extends Enemy
 
-
 func attack(target_enemy):
 	while rolls > 0:
 		var rolled_ability = DiceRoll.roll("1d6")

@@ -1,105 +1,107 @@
 extends Control
 
-@export var Address = "127.0.0.1"
+#region Export Variables
+@export var address = "127.0.0.1"
 @export var port = 8910
+#endregion Export Variables
+
+#region Public Variables
 var peer
-
 var selected_class = "Knighter"
+#endregion Public Variables
 
-# Called when the node enters the scene tree for the first time.
+# Called when the node enters the scene tree for the first time
 func _ready():
-	multiplayer.peer_connected.connect(peer_connected)
-	multiplayer.peer_disconnected.connect(peer_disconnected)
-	multiplayer.connected_to_server.connect(connected_to_server)
-	multiplayer.connection_failed.connect(connection_failed)
-	if "--server" in OS.get_cmdline_args():
-		hostGame()
-
-
-# this get called on the server and clients
-func peer_connected(id):
-	print("Player Connected " + str(id))
+	multiplayer.peer_connected.connect(_on_peer_connected)
+	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+	multiplayer.connected_to_server.connect(_on_connected_to_server)
+	multiplayer.connection_failed.connect(_on_connection_failed)
 	
-# this get called on the server and clients
-func peer_disconnected(id):
-	print("Player Disconnected " + str(id))
+	if "--server" in OS.get_cmdline_args():
+		HostGame()
+
+#region Multiplayer Callbacks
+# This get called on the server and clients
+func _on_peer_connected(id : int):
+	MultiplayerManager.peer_print("Peer connected %d" % id)
+	
+# This get called on the server and clients
+func _on_peer_disconnected(id : int):
+	MultiplayerManager.peer_print("Peer disconnected %d" % id)
+	
 	GameManager.Players.erase(id)
 	var players = get_tree().get_nodes_in_group("player")
 	for i in players:
 		if i.name == str(id):
 			i.queue_free()
 
-# called only from clients
-func connected_to_server():
-	print("connected To Sever!")
+# Called only from clients
+func _on_connected_to_server():
+	MultiplayerManager.peer_print("Connected to server, sending PI")
 	SendPlayerInformation.rpc_id(1, $PlayerName.text, multiplayer.get_unique_id(), selected_class)
 
-# called only from clients
-func connection_failed():
-	print("Couldnt Connect")
+# Called only from clients
+func _on_connection_failed():
+	MultiplayerManager.peer_print("Couldn't connect")
+#endregion Multiplayer Callbacks
 
+#region Multiplayer Methods
 @rpc("any_peer")
 func SendPlayerInformation(name, id, selected_class):
 	if !GameManager.Players.has(id):
+		MultiplayerManager.peer_print("Received PI: name=%s id=%s class=%s" % [name, id, selected_class])
 		GameManager.Players[id] ={
 			"name" : name,
 			"id" : id,
 			"class": selected_class
 		}
+		
+		MultiplayerManager.peer_print("Players registered: %s" % str(GameManager.Players))
+	else:
+		MultiplayerManager.peer_print("Received REPEATED PI: id=%s" % id)
 	
 	if multiplayer.is_server():
+		MultiplayerManager.peer_print("Sending PIs to peers")
 		for i in GameManager.Players:
 			SendPlayerInformation.rpc(GameManager.Players[i].name, i, GameManager.Players[i].class)
 
-@rpc("any_peer","call_local")
+@rpc("any_peer", "call_local")
 func StartGame():
 	var main_scene = load("res://world.tscn").instantiate()
 	get_tree().root.add_child(main_scene)
 	self.hide()
 	
-func hostGame():
+func HostGame():
 	peer = ENetMultiplayerPeer.new()
 	var error = peer.create_server(port, 3)
 	if error != OK:
-		print("cannot host: " + error)
+		print("Cannot host: " + error)
 		return
 	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
 	
 	multiplayer.set_multiplayer_peer(peer)
-	print("Waiting For Players!")
 	
-	
-func _on_host_button_down():
-	hostGame()
+	MultiplayerManager.peer_print("Hosting and waiting for players, sending PI")
 	SendPlayerInformation($PlayerName.text, multiplayer.get_unique_id(), selected_class)
-	pass # Replace with function body.
+#endregion Multiplayer Methods
 
+func _on_host_button_down():
+	HostGame()
 
 func _on_join_button_down():
 	peer = ENetMultiplayerPeer.new()
-	peer.create_client(Address, port)
+	peer.create_client(address, port)
 	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
-	multiplayer.set_multiplayer_peer(peer)	
-	pass # Replace with function body.
-
+	multiplayer.set_multiplayer_peer(peer)
 
 func _on_start_game_button_down():
+	# TODO: Assert every player has a name
 	StartGame.rpc()
-	pass # Replace with function body.
 
-
-## CLASS SELECTION
-
+#region Class Selection Callbacks
 func _on_knighter_class_pressed() -> void:
 	selected_class = "knighter"
-	#enable_buttons()
 
 func _on_ranger_class_pressed() -> void:
 	selected_class = "ranger"
-	#enable_buttons()
-
-
-#func enable_buttons():
-	#$Host.disabled = false
-	#$Join.disabled = false
-	#$StartGame.disabled = false
+#endregion Class Selection Callbacks

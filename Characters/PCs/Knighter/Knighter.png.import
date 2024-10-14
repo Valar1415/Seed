@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ba2vovnx8jg60"
-path="res://.godot/imported/KnighterHover.png-20923ee4c0c817885bc881f0910494d8.ctex"
+uid="uid://b3442xm58r22h"
+path="res://.godot/imported/Knighter.png-866eb84f87cb5856c5cc708dbddf3cfc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Characters/PCs/KnighterHover.png"
-dest_files=["res://.godot/imported/KnighterHover.png-20923ee4c0c817885bc881f0910494d8.ctex"]
+source_file="res://Characters/PCs/Knighter/Knighter.png"
+dest_files=["res://.godot/imported/Knighter.png-866eb84f87cb5856c5cc708dbddf3cfc.ctex"]
 
 [params]
 

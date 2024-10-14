@@ -1,8 +1,8 @@
 extends Node2D
 
+@onready var PlayerScene = null
 
 # Characters
-@export var PlayerScene : PackedScene
 @onready var allies: Node2D = $Combatants/Allies
 
 
@@ -15,21 +15,20 @@ extends Node2D
 func _ready(): # Multiplayer Spawn & Authority?
 	var index = 0
 	for i in GameManager.Players:
-		var currentPlayer = PlayerScene.instantiate()
-		currentPlayer.name = str(GameManager.Players[i].id)
-		currentPlayer.player_id = str(GameManager.Players[i].id).to_int()
-		allies.add_child(currentPlayer)
-		
-		
 		# Match player class
 		var player_class = GameManager.Players[i]["class"]
 		match player_class:
 			"knighter":
-				currentPlayer.sprite.texture = preload("res://Characters/PCs/Knighter.png")
-				currentPlayer.initiative = "1d99999"
+				PlayerScene = preload("res://Characters/PCs/Knighter/Knighter.tscn")
 			"ranger":
-				currentPlayer.initiative = "1d1"
-				currentPlayer.sprite.texture = preload("res://Characters/PCs/Ranger.png")
+				PlayerScene = preload("res://Characters/PCs/Ranger/Ranger.tscn")
+			_:
+				PlayerScene = preload("res://Characters/PCs/Knighter/Knighter.tscn")
+		
+		var currentPlayer = PlayerScene.instantiate()
+		allies.add_child(currentPlayer)
+		currentPlayer.name = str(GameManager.Players[i].id)
+		currentPlayer.player_id = str(GameManager.Players[i].id).to_int()
 		
 		# Set spawn position
 		for spawn in get_tree().get_nodes_in_group("PlayerSpawnPoint"):

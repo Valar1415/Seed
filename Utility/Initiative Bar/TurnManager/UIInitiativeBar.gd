@@ -8,7 +8,9 @@ extends VBoxContainer
 func _ready() -> void:
 	UiEventBus.initiative_order.connect(emit_add_initiative_bar)
 	UiEventBus.turn_end.connect(emit_sort_initiative_bar)
+	UiEventBus.character_death.connect(emit_character_death)
 	
+
 
 @rpc("any_peer", "call_local", "reliable")
 func add_initiative_bar(order) -> void:
@@ -45,7 +47,7 @@ func add_initiative_bar(order) -> void:
 
 
 @rpc("any_peer", "call_local", "reliable")
-func sort_initiative_bar(_character):
+func sort_initiative_bar(character):
 	if get_child_count() > 0:
 		var first_child = get_child(0)
 		var second_child = get_child(1)
@@ -54,6 +56,19 @@ func sort_initiative_bar(_character):
 		add_child(first_child)     # Add them back to the bottom
 		add_child(second_child)     # Add them back to the bottom
 
+@rpc("any_peer", "call_local", "reliable")
+func character_death(character): # Remove from initiative bar
+	for i in range(get_child_count()):
+		var child = get_child(i)
+		
+		if child.is_in_group("character_texture"):
+			if child.character_reference == character:
+				remove_child(child)
+				
+				if i + 1 < get_child_count():  # Check if there is a next child
+					var next_child = get_child(i)  # Get the next chil
+					remove_child(next_child)  # Remove the circle texture rect
+				break  # Stop after removing the relevant child
 
 #region RPC signals
 func emit_add_initiative_bar(order):
@@ -61,6 +76,9 @@ func emit_add_initiative_bar(order):
 
 func emit_sort_initiative_bar(character):
 	sort_initiative_bar.rpc(character) # Broadcast the RPC to all peers
+
+func emit_character_death(character):
+	character_death.rpc(character) # Broadcast the RPC to all peers
 #endregion
 
 #region get functions

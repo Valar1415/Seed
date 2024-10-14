@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 DiceRoll="*res://Utility/DiceRoll/DiceRoll.gd"
 UiEventBus="*res://Utility/Event Buses/UI_Event_Bus.gd"
 GameManager="*res://Utility/Multiplayer Management/game_manager.gd"
+MultiplayerManager="*res://Utility/Multiplayer Management/MultiplayerManager.gd"
 
 [display]
 
@@ -78,6 +79,11 @@ DEBUG_K={
 mouse_left_click={
 "deadzone": 0.5,
 "events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":1,"position":Vector2(88, 26),"global_position":Vector2(97, 72),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
+]
+}
+mouse_right_click={
+"deadzone": 0.5,
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":2,"position":Vector2(317, 9),"global_position":Vector2(326, 55),"factor":1.0,"button_index":2,"canceled":false,"pressed":true,"double_click":false,"script":null)
 ]
 }
 
