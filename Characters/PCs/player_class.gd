@@ -220,6 +220,7 @@ func turn_start():
 	turn = true
 	movement = 1
 	rolls = 1
+	MultiplayerManager.peer_print("TURN STARTEEEEEEEEEEEEEEEED")
 
 func find_enemy_on_tile(tile_pos: Vector2) -> Node:
 	var tile_pos_int: Vector2i = tile_pos.floor()  # Convert to Vector2i (rounds down to integer coordinates)

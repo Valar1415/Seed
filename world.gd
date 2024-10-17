@@ -49,7 +49,7 @@ func _on_send_pressed() -> void:
 		message.text = ""
 
 
-
+	
 func roll_dice(dice): 
 	var result = DiceRoll.roll(dice)
 	print(result)

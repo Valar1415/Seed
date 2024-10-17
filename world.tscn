@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://5ssn378etleb"]
+[gd_scene load_steps=15 format=4 uid="uid://5ssn378etleb"]
 
 [ext_resource type="TileSet" uid="uid://dhy45riix4ao6" path="res://Environment/Tile Sets/Ground.tres" id="1_33e52"]
 [ext_resource type="TileSet" uid="uid://dmji8m5imu7ws" path="res://Environment/Tile Sets/Bounds.tres" id="1_douwk"]
@@ -7,6 +7,7 @@
 [ext_resource type="TileSet" uid="uid://bwdkad5r1bl6f" path="res://Environment/Tile Sets/Houses.tres" id="2_n4sac"]
 [ext_resource type="Script" path="res://AStar_Pathfinding.gd" id="2_ovv0h"]
 [ext_resource type="Script" path="res://Utility/Initiative Bar/TurnManager/initiative_manager.gd" id="3_r5ven"]
+[ext_resource type="PackedScene" uid="uid://datrxqa6qokki" path="res://Characters/NPCs/wolf.tscn" id="8_hkt3t"]
 [ext_resource type="FontFile" uid="uid://cv44u08rsmf26" path="res://temp/Aleo-Black.ttf" id="11_8jqm7"]
 [ext_resource type="Script" path="res://Utility/Initiative Bar/TurnManager/UIInitiativeBar.gd" id="11_txjda"]
 [ext_resource type="PackedScene" uid="uid://c3fvwrbvnqvsr" path="res://Utility/Initiative Bar/IntPlaceholderSprite.tscn" id="12_ia5ej"]
@@ -41,6 +42,12 @@ tile_set = ExtResource("2_n4sac")
 script = ExtResource("3_r5ven")
 
 [node name="Enemies" type="Node2D" parent="Combatants"]
+
+[node name="Wolf" parent="Combatants/Enemies" instance=ExtResource("8_hkt3t")]
+position = Vector2(242, 107)
+
+[node name="Wolf2" parent="Combatants/Enemies" instance=ExtResource("8_hkt3t")]
+position = Vector2(515, 97)
 
 [node name="Allies" type="Node2D" parent="Combatants"]
 

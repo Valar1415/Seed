@@ -17,10 +17,9 @@ func _ready() -> void:
 	
 	if is_multiplayer_authority():
 		combatants.local_player = self
-		initiative = "1d99"
+		initiative = "1d998999"
 		reveal_local_UI()
 	
-
 
 
 

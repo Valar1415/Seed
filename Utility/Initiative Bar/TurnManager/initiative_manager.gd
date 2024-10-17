@@ -37,37 +37,56 @@ func emit_inititative_order():
 	
 	await get_tree().create_timer(1).timeout
 	broadcast_initative_order.rpc(initiative_order)
-	#if is_local_player_turn_owner():
-		#MultiplayerManager.peer_print("true")
-		#print(get_current_turn_owner())
-	#else:
-		#print("false")
-	#start_turns()
+	var turn_owner_name = initiative_order[turnInit]["name"]
+	start_first_turn.rpc()
+	
 
-
-func get_current_turn_owner() -> String:
-	return initiative_order[turnInit]["name"] # Or my_players_parent.get_children()[turn]
+func get_current_turn_owner() -> Object:
+	var turn_owner_name = initiative_order[turnInit]["name"]
+	var turn_owner = find_combatant_by_name(turn_owner_name)
+	return turn_owner
 	#return initiative_order[turn]["node"] # Or my_players_parent.get_children()[turn]
 
 func is_local_player_turn_owner() -> bool:
-	var local_player_scene = find_combatant_by_name(get_current_turn_owner())
+	var local_player_scene = get_current_turn_owner()
 	return local_player_scene == local_player
 
 @rpc("any_peer", "call_local", "reliable")
 func end_turn() -> void:
-	turn += 1
 	turnInit = (turn + 1) % initiative_order.size() # Wrap around initiative order
+	turn += 1
 	
-	var turn_owner_name = get_current_turn_owner()
-	var turn_owner = find_combatant_by_name(turn_owner_name)
-	MultiplayerManager.peer_print(is_local_player_turn_owner())
+	var turn_owner = get_current_turn_owner()
+	MultiplayerManager.peer_print(turn_owner)
+	#MultiplayerManager.peer_print(is_local_player_turn_owner())
 	
 	if is_local_player_turn_owner():
-		turn_owner.turn_start()
+		ally_turn_start(turn_owner)
 		UiEventBus.turn_end.emit(turn_owner)
-		MultiplayerManager.peer_print("my turn")
+	else: # Enemy turn
+		if multiplayer.is_server():
+			enemy_turn_start(turn_owner)
 	
 
+func ally_turn_start(turn_owner):
+	turn_owner.turn_start()
+	update_ui.rpc()
+	#MultiplayerManager.peer_print("my turn")
+
+@rpc("any_peer", "call_local", "reliable")
+func start_first_turn():
+	if is_local_player_turn_owner():
+		ally_turn_start(get_current_turn_owner())
+	MultiplayerManager.peer_print(get_current_turn_owner())
+	
+
+@rpc("any_peer", "call_local", "reliable")
+func update_ui() -> void: # Button
+	%EndTurnButton.update()
+
+func enemy_turn_start(turn_owner):
+	#print(turn_owner)
+	turn_owner.turn_start.rpc()
 
 func find_combatant_by_name(char_name: String) -> Node:
 	var characters_root = get_tree().root.get_node("World/Combatants")

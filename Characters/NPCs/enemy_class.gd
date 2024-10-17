@@ -48,6 +48,13 @@ func _ready():
 		#act()
 
 @rpc("any_peer", "call_local", "reliable")
+func turn_start():
+	movement = 2
+	rolls = 1
+	print_rich("[color=#ADD8E6]Enemy turn:[/color] %s" % name)
+	act.rpc()
+
+@rpc("any_peer", "call_local", "reliable")
 func act():
 	if current_state == States.CORPSE: # Not good, rather get him out of init array
 		return
