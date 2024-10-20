@@ -58,8 +58,9 @@ enum Abilities {A0,A1,A2,A3,A4,A5,A6}
 
 var current_ability: Abilities = Abilities.A0
 var targeting_active: bool = false
-var dice_result: int = 0
 
+#@export var dice_result: int = 0 # Was used die roll for rpc sync
+#@export var dice_result2: int = 0
 
 func _process(_delta) -> void:
 	var n = calculate_mouse_pos()
@@ -77,16 +78,17 @@ func _process(_delta) -> void:
 		global_position = mouse_pos
 
 func _input_event(_viewport, event, _shape_idx): # Mouse Drag&Drop
-	if event is InputEventMouseButton and event.pressed:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			is_dragging = true
-			#print("Mouse button pressed on player")
-	
-	
-	if event is InputEventMouseButton and not event.pressed:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			is_dragging = false
-			snap_to_nearest_tile()
+	if is_multiplayer_authority():
+		if event is InputEventMouseButton and event.pressed:
+			if event.button_index == MOUSE_BUTTON_LEFT:
+				is_dragging = true
+				#print("Mouse button pressed on player")
+		
+		
+		if event is InputEventMouseButton and not event.pressed:
+			if event.button_index == MOUSE_BUTTON_LEFT:
+				is_dragging = false
+				snap_to_nearest_tile()
 
 func _input(event: InputEvent) -> void:
 	if is_multiplayer_authority():
@@ -144,6 +146,7 @@ func select_atk_target(event): # Called from input
 		
 		# Find enemy on selected tile
 		var target_enemy = find_enemy_on_tile(target_pos)
+		var target_enemy_string_ref = target_enemy.get_path() # Multiplayer fix (EncodedObjectAsID)
 		
 		# Check if ranged attack is blocked
 		var range_atk_collider = raycast.get_collider()
@@ -151,7 +154,7 @@ func select_atk_target(event): # Called from input
 		# Execute the ability with the target tile position
 		if range_atk_collider == null or !range_atk_collider.is_in_group("obstacle"): # Check if ranged attack is blocked
 			if rolls > 0:
-					execute_ability(current_ability, target_pos, target_enemy)
+					execute_ability.rpc(current_ability, target_pos, target_enemy_string_ref)
 		else:
 			print("Attack blocked by obstacle")
 		
@@ -162,7 +165,9 @@ func deactivate_targeting(): # Called from input
 	target_icon.visible = false
 	raycast.enabled = false
 
-func execute_ability(ability: Abilities, target_pos: Vector2, target_enemy) -> void:
+@rpc("any_peer", "call_local", "reliable")
+func execute_ability(ability: Abilities, target_pos: Vector2, target_enemy_path) -> void:
+	var target_enemy = get_node(target_enemy_path)
 	print("Ability executed at position: ", target_pos)
 	print("target enemy name: ", target_enemy)
 	match ability:
@@ -182,6 +187,7 @@ func execute_ability(ability: Abilities, target_pos: Vector2, target_enemy) -> v
 
 ## ATTRIBUTES
 
+@rpc("any_peer", "call_local", "reliable")
 func gain_health(amount):
 	health += amount
 	if health > max_health:
@@ -189,6 +195,7 @@ func gain_health(amount):
 	%HealthBar.value = health
 	%HealthLbl.text = str(health, "/", max_health)
 
+@rpc("any_peer", "call_local", "reliable")
 func gain_armor(amount):
 	armor += amount
 	if armor > max_armor:
@@ -196,6 +203,7 @@ func gain_armor(amount):
 	%ArmorBar.value = armor
 	%ArmorLbl.text = str(armor, "/", max_armor)
 
+@rpc("any_peer", "call_local", "reliable")
 func take_damage(amount):
 	if armor > 0:
 		var damage_to_armor = min(amount, armor)  # Reduce only the amount available in armor
@@ -248,10 +256,20 @@ func snap_to_nearest_tile():
 func reveal_local_UI():
 	$GUI_Local.show()
 
-
-func roll_dice(dice): 
-	var result = DiceRoll.roll(dice)
-	print(result)
-	if result != 0:
-		world.type_dice_result(result)
-		return result
+func roll_dice(skill: Skill): 
+	if multiplayer.is_server():
+		skill.dice_result_dmg = DiceRoll.roll(skill.dice_roll_dmg)
+		skill.dice_result_armor = DiceRoll.roll(skill.dice_roll_armor)
+		world.type_dice_result.rpc(skill.dice_result_dmg)
+		MultiplayerManager.peer_print(skill.dice_result_dmg)
+		if skill.dice_result_armor != 0:
+			world.type_dice_result.rpc(skill.dice_result_armor)
+			MultiplayerManager.peer_print(skill.dice_result_armor)
+		#sync_diceroll.rpc(attack)
+		##return result
+#
+#@rpc("any_peer", "call_local", "reliable")
+#func sync_diceroll(attack: Attack):
+	#
+	#dice_result2 = result2
+	#MultiplayerManager.peer_print(result2)

@@ -47,25 +47,24 @@ func _ready():
 		#movement = 2
 		#act()
 
-@rpc("any_peer", "call_local", "reliable")
 func turn_start():
 	movement = 2
 	rolls = 1
-	print_rich("[color=#ADD8E6]Enemy turn:[/color] %s" % name)
-	act.rpc()
+	#print_rich("[color=#ADD8E6]Enemy turn:[/color] %s" % name)
+	act()
 
-@rpc("any_peer", "call_local", "reliable")
+#@rpc("any_peer", "call_local", "reliable")
 func act():
 	if current_state == States.CORPSE: # Not good, rather get him out of init array
 		return
 	
 	set_tilemap_obstacle(false)
 	var target = pick_target()
-	print_rich("[color=red][b]%s:[/b][/color] %s" % ["Enemy target", target.name])
+	#print_rich("[color=red][b]%s:[/b][/color] %s" % ["Enemy target", target.name])
 	get_path_to_target(target)
 	if path.is_empty(): # Do nothing if target inaccessible
 		return
-	
+	var target_string_ref = target.get_path() # Multiplayer fix (EncodedObjectAsID)
 	
 	atk_targets.clear()
 	check_atk_targets_in_range()
@@ -76,23 +75,24 @@ func act():
 		check_atk_targets_in_range()
 		if !atk_targets.is_empty(): # If found target, attack
 			await rotate_towards_target(target.global_position)
-			attack(target)
+			attack.rpc(target_string_ref)
 		else: # Use roll for movement
 			movement = base_movement
 			rolls = 0
 			await move()
 	else:
 		await rotate_towards_target(target.global_position)
-		attack(target)
+		attack.rpc(target_string_ref)
 	
 	
 	await get_tree().create_timer(2).timeout
 	set_tilemap_obstacle(true)
-	UiEventBus.turn_end.emit(self)
 	emit_signal("turn_end")
 	
 
-func attack(target_enemy):
+@rpc("any_peer", "call_local", "reliable")
+func attack(target_enemy_path):
+	var target_enemy = get_node(target_enemy_path)
 	while rolls > 0:
 		var rolled_ability = DiceRoll.roll("1d6")
 		match rolled_ability:
@@ -196,7 +196,7 @@ func get_path_to_target(target):
 #
 	#position += Vector2.DOWN * 70
 
-
+@rpc("any_peer", "call_local", "reliable")
 func take_damage(amount):
 	if armor > 0:
 		var damage_to_armor = min(amount, armor)  # Reduce only the amount available in armor
@@ -236,3 +236,11 @@ func die():
 func set_tilemap_obstacle(value):
 	var current_position = tileMap_ground.local_to_map(global_position)
 	astar.set_point_solid(current_position, value)
+
+func roll_dice(skill: Skill): 
+	if multiplayer.is_server():
+		skill.dice_result_dmg = DiceRoll.roll(skill.dice_roll_dmg)
+		skill.dice_result_armor = DiceRoll.roll(skill.dice_roll_armor)
+		MultiplayerManager.peer_print(skill.dice_result_dmg)
+		if skill.dice_result_armor != 0:
+			MultiplayerManager.peer_print(skill.dice_result_armor)

@@ -17,44 +17,64 @@ func _ready() -> void:
 	
 	if is_multiplayer_authority():
 		combatants.local_player = self
-		initiative = "1d998999"
+		initiative = "1d9999"
 		reveal_local_UI()
 	
 
 
-
-func execute_ability(ability: Abilities, target_pos: Vector2, target_enemy) -> void:
-	print("Ability executed at position: ", target_pos)
-	print("target enemy name: ", target_enemy)
+@rpc("any_peer", "call_local", "reliable")
+func execute_ability(ability: Abilities, target_pos: Vector2, target_enemy_path) -> void:
+	var target_enemy = get_node(target_enemy_path)
+	#print("Ability executed at position: ", target_pos)
+	#print("target enemy name: ", target_enemy)
 	match ability:
 		Abilities.A1:
-			var damage = roll_dice("1d6 + 1d8")
+			var skill = Skill.new()
+			skill.dice_roll_dmg = "1d6 + 1d8"
+			await roll_dice(skill)
+			
 			if target_enemy != null:
-				target_enemy.take_damage(damage)
-			rolls -= 1
+				target_enemy.take_damage.rpc(skill.dice_result_dmg)
+			skill.queue_free()
 		Abilities.A2:
-			var damage = roll_dice("1d12 + 1d4")
+			var skill = Skill.new()
+			skill.dice_roll_dmg = "1d6 + 1d8"
+			await roll_dice(skill)
+			
 			if target_enemy != null:
-				target_enemy.take_damage(damage)
-			rolls -= 1
+				target_enemy.take_damage.rpc(skill.dice_result_dmg)
+			skill.queue_free()
 		Abilities.A3:
-			var health = roll_dice("3d6")
-			gain_health(health)
-			rolls -= 1
+			var skill = Skill.new()
+			skill.dice_roll_health = "3d6"
+			await roll_dice(skill)
+			
+			gain_health.rpc(skill.dice_result_health)
+			skill.queue_free()
 		Abilities.A4:
-			var damage = roll_dice("2d8")
+			var skill = Skill.new()
+			skill.dice_roll_dmg = "2d8"
+			await roll_dice(skill)
+			
 			if target_enemy != null:
-				target_enemy.take_damage(damage)
-			rolls -= 1
+				target_enemy.take_damage.rpc(skill.dice_result_dmg)
+			skill.queue_free()
 		Abilities.A5:
-			var armor_ = roll_dice("4d6")
-			gain_armor(armor_)
-			rolls -= 1
+			var skill = Skill.new()
+			skill.dice_roll_armor = "4d6"
+			await roll_dice(skill)
+			
+			gain_armor.rpc(skill.dice_result_armor)
+			skill.queue_free()
 		Abilities.A6:
-			var damage = roll_dice("6d4")
+			var skill = Skill.new()
+			skill.dice_roll_dmg = "6d4"
+			await roll_dice(skill)
+			
 			if target_enemy != null:
-				target_enemy.take_damage(damage)
-			rolls -= 1
+				target_enemy.take_damage.rpc(skill.dice_result_dmg)
+			skill.queue_free()
+	rolls -= 1
 
 
 ## ABILITIES
@@ -72,7 +92,7 @@ func _on_a_2_pressed() -> void:
 func _on_a_3_pressed() -> void:
 	current_ability = Abilities.A3
 	if rolls > 0 and turn:
-		execute_ability(current_ability, Vector2(0,0), Vector2(0,0))
+		execute_ability.rpc(current_ability, Vector2(0,0), Vector2(0,0))
 	pass
 
 func _on_a_4_pressed() -> void:
@@ -83,7 +103,7 @@ func _on_a_4_pressed() -> void:
 func _on_a_5_pressed() -> void:
 	current_ability = Abilities.A5
 	if rolls > 0 and turn:
-		execute_ability(current_ability, Vector2(0,0), Vector2(0,0))
+		execute_ability.rpc(current_ability, Vector2(0,0), Vector2(0,0))
 	pass
 
 func _on_a_6_pressed() -> void:

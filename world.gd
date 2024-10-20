@@ -36,6 +36,7 @@ func _ready(): # Multiplayer Spawn & Authority?
 				currentPlayer.global_position = spawn.global_position
 		index += 1
 	
+	
 
 
 
@@ -49,7 +50,6 @@ func _on_send_pressed() -> void:
 		message.text = ""
 
 
-	
 func roll_dice(dice): 
 	var result = DiceRoll.roll(dice)
 	print(result)
@@ -57,6 +57,8 @@ func roll_dice(dice):
 		type_dice_result(result)
 		return result
 
+
+@rpc("any_peer", "call_local", "reliable")
 func type_dice_result(result):
 		chatbox.text += str("Result = ", result, "\n")
 		chatbox.scroll_vertical = chatbox.get_line_height()

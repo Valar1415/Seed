@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://ba2vovnx8jg60" path="res://Characters/PCs/Knighter/KnighterHover.png" id="3_x6ph7"]
 [ext_resource type="Texture2D" uid="uid://bwmdhrbt0uexu" path="res://Characters/PCs/Ranger/RangerHover.png" id="5_1xgic"]
 
-
 [node name="MultiplayerController" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -115,6 +114,7 @@ offset_right = 549.0
 offset_bottom = 136.0
 text = "Player Name:"
 
+[connection signal="tree_exiting" from="." to="." method="_on_tree_exiting"]
 [connection signal="pressed" from="ClassChoice/VBoxContainer/KnighterClass" to="." method="_on_knighter_class_pressed"]
 [connection signal="pressed" from="ClassChoice/VBoxContainer/RangerClass" to="." method="_on_ranger_class_pressed"]
 [connection signal="pressed" from="Host" to="." method="_on_host_button_down"]
