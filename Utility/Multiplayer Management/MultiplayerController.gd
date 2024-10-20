@@ -10,10 +10,12 @@ var peer
 var selected_class = "Knighter"
 #endregion Public Variables
 
-#region UPNP
-var upnp
-var external_ip
-#endregion UPNP
+var hamachi_ip = "25.16.140.91"
+
+##region UPNP
+#var upnp
+#var external_ip
+##endregion UPNP
 
 # Called when the node enters the scene tree for the first time
 func _ready():
@@ -21,27 +23,30 @@ func _ready():
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
 	multiplayer.connection_failed.connect(_on_connection_failed)
-	uPnP_setup()
+	
+	#if multiplayer.is_server():
+		#uPnP_setup()
+		#print("upnp set up")
 	
 	if "--server" in OS.get_cmdline_args():
 		HostGame()
 
-func uPnP_setup():
-	upnp = UPNP.new()
-	var discover_result = upnp.discover()
-	
-	if discover_result == UPNP.UPNP_RESULT_SUCCESS:
-		if upnp.get_gateway() and upnp.get_gateway().is_valid_gateway():
-			
-			var map_result_udp = upnp.add_port_mapping(port, port, "godot_udp", "UDP", 0)
-			var map_result_tcp = upnp.add_port_mapping(port, port, "godot_tcp", "TCP", 0)
-			
-			if not map_result_udp == UPNP.UPNP_RESULT_SUCCESS:
-				upnp.add_port_mapping(port, port, "", "UDP")
-			if not map_result_tcp == UPNP.UPNP_RESULT_SUCCESS:
-				upnp.add_port_mapping(port, port, "", "TCP")
-	
-	external_ip = upnp.query_external_address()
+#func uPnP_setup():
+	#upnp = UPNP.new()
+	#var discover_result = upnp.discover()
+	#
+	#if discover_result == UPNP.UPNP_RESULT_SUCCESS:
+		#if upnp.get_gateway() and upnp.get_gateway().is_valid_gateway():
+			#
+			#var map_result_udp = upnp.add_port_mapping(port, port, "godot_udp", "UDP", 0)
+			#var map_result_tcp = upnp.add_port_mapping(port, port, "godot_tcp", "TCP", 0)
+			#
+			#if not map_result_udp == UPNP.UPNP_RESULT_SUCCESS:
+				#upnp.add_port_mapping(port, port, "", "UDP")
+			#if not map_result_tcp == UPNP.UPNP_RESULT_SUCCESS:
+				#upnp.add_port_mapping(port, port, "", "TCP")
+	#
+	#external_ip = upnp.query_external_address()
 	
 
 
@@ -116,7 +121,7 @@ func _on_host_button_down():
 
 func _on_join_button_down():
 	peer = ENetMultiplayerPeer.new()
-	peer.create_client(external_ip, port)
+	peer.create_client(hamachi_ip, port)
 	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
 	multiplayer.set_multiplayer_peer(peer)
 	
@@ -134,7 +139,7 @@ func _on_ranger_class_pressed() -> void:
 #endregion Class Selection Callbacks
 
 
-func _exit_tree() -> void:
-	upnp.delete_port_mapping(port, "UDP")
-	upnp.delete_port_mapping(port, "TCP")
-	
+#func _exit_tree() -> void:
+	#upnp.delete_port_mapping(port, "UDP")
+	#upnp.delete_port_mapping(port, "TCP")
+	#
