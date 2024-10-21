@@ -1,26 +1,5 @@
 extends Player
 
-func _ready() -> void:
-	await get_tree().process_frame # Do not remove
-	
-	#if is_multiplayer_authority():
-		#print("Player ID: ", player_id, " has authority.")
-	#else:
-		#print("Player ID: ", player_id, " does not have authority.")
-	
-	#%HealthLbl.max_value = max_health
-	#%ArmorLbl.max_value = max_armor
-	snap_to_nearest_tile()
-	$Camera2D.position = global_position
-	%lblPlayerName.text = name #set name to playerID
-	
-	
-	if is_multiplayer_authority():
-		combatants.local_player = self
-		initiative = "1d9999"
-		reveal_local_UI()
-	
-
 
 @rpc("any_peer", "call_local", "reliable")
 func execute_ability(ability: Abilities, target_pos: Vector2, target_enemy_path) -> void:

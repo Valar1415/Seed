@@ -1,40 +1,22 @@
-extends Area2D
+extends Entity
 class_name Enemy
 
 ## SIGNALS
 signal turn_end
 
 ## GET NODES
-@onready var tile_map: Node2D = $"../../../TileMap"
-@onready var tileMap_ground: TileMapLayer = $"../../../TileMap/Ground"
 @onready var range: Area2D = $Range
-@onready var allies: Node2D = $"../../Allies"
 
 ## ATTACK
 var atk_targets: Array = []
-
-## ATTRIBUTES
-@export var base_movement := 2
-@export var initiative := "1d400"
-@export var max_health := 24
-@export var health := 24
-@export var movement := 2
-@export var rolls := 1
-@export var max_armor: int = 15
-@export var armor: int = 0
-
-## STATES
-enum States {ALIVE, CORPSE}
-
-var current_state: States = States.ALIVE
 
 ## PATHFINDING
 @onready var astar = tile_map.astar
 var path: Array[Vector2i]
 
 func _ready():
-	var closest_tile = tileMap_ground.local_to_map(global_position)
-	global_position = tileMap_ground.map_to_local(closest_tile)
+	UiEventBus.pass_texture_ref.connect(set_UI_texture_reference)
+	snap_to_nearest_tile()
 	set_tilemap_obstacle(true)
 
 #func _unhandled_input(event: InputEvent) -> void: # DEBUG
@@ -47,17 +29,9 @@ func _ready():
 		#movement = 2
 		#act()
 
-func turn_start():
-	movement = 2
-	rolls = 1
-	#print_rich("[color=#ADD8E6]Enemy turn:[/color] %s" % name)
-	act()
 
 #@rpc("any_peer", "call_local", "reliable")
 func act():
-	if current_state == States.CORPSE: # Not good, rather get him out of init array
-		return
-	
 	set_tilemap_obstacle(false)
 	var target = pick_target()
 	#print_rich("[color=red][b]%s:[/b][/color] %s" % ["Enemy target", target.name])
@@ -146,6 +120,7 @@ func pick_target():
 				closest_distance = distance  # Update closest distance
 				closest_target = ally          # Set this ally as the closest one
 	
+	print(closest_target)
 	return closest_target  # Return the closest ally
 
 func rotate_towards_target(target):
@@ -196,29 +171,10 @@ func get_path_to_target(target):
 #
 	#position += Vector2.DOWN * 70
 
-@rpc("any_peer", "call_local", "reliable")
-func take_damage(amount):
-	if armor > 0:
-		var damage_to_armor = min(amount, armor)  # Reduce only the amount available in armor
-		armor -= damage_to_armor
-		amount -= damage_to_armor
-	
-	if amount > 0:
-		health -= amount
-	
-	if health <= 0:
-		health = 0
-		die.rpc()
-	%HealthBar.value = health
-	%HealthLbl.text = str(health, "/", max_health)
-	%ArmorBar.value = armor
-	%ArmorLbl.text = str(armor, "/", max_armor)
 
-@rpc("any_peer", "call_local", "reliable")
-func die():
-	%DeathIcon.show()
-	current_state = States.CORPSE
-	UiEventBus.character_death.emit(self)
+
+
+	
 
 ## OVO JE BILO ZA RAYCASTTRACKING MOVEMENT
 #var second_pos = tile_map.ground.map_to_local(path[1]) # For attacks
@@ -236,6 +192,9 @@ func die():
 func set_tilemap_obstacle(value):
 	var current_position = tileMap_ground.local_to_map(global_position)
 	astar.set_point_solid(current_position, value)
+
+func set_UI_texture_reference(tex_reference):
+	UI_inititative_texture.append(tex_reference)
 
 func roll_dice(skill: Skill): 
 	if multiplayer.is_server():

@@ -1,4 +1,4 @@
-extends Area2D
+extends Entity
 class_name Player
 
 
@@ -11,14 +11,8 @@ class_name Player
 		player_id = id
 		set_multiplayer_authority(id)
 
-## GET NODES
-@onready var combatants: Node2D = $"../.."
-@onready var enemies: Array = $"../../Enemies".get_children()
-@onready var sprite: Sprite2D = $Sprite2D
 
 ## ENVIRONMENT
-@onready var tile_map: Node2D = $"../../../TileMap"
-@onready var tileMap_ground: TileMapLayer = $"../../../TileMap/Ground"
 @onready var world: Node2D = $"../../.."
 
 ## TARGETING
@@ -26,32 +20,13 @@ class_name Player
 @onready var raycast: RayCast2D = $RayCast2D
 
 ## MISC
+@onready var camera = %Camera2D
 @onready var debuffIcon = preload("res://Utility/debuff_icon.tscn")
 var chat_inactive := true
 
-## TURN ORDER
-var turn := false
 
 ## MOUSE DRAG
 var is_dragging = false
-
-## ATTRIBUTES
-@export var movement: int = 1:
-	get: return movement
-	set(value):
-		movement = value
-		%Movement.text = str("Movement: ", value)
-@export var rolls: int = 1:
-	get: return rolls
-	set(value):
-		rolls = value
-		%Rolls.text = str("Rolls: ", value)
-
-@export var initiative : String
-@export var max_health: int = 100
-@export var health: int = 100
-@export var max_armor: int = 15
-@export var armor: int = 0
 
 ## ABILITIES
 enum Abilities {A0,A1,A2,A3,A4,A5,A6}
@@ -61,6 +36,28 @@ var targeting_active: bool = false
 
 #@export var dice_result: int = 0 # Was used die roll for rpc sync
 #@export var dice_result2: int = 0
+
+func _ready() -> void:
+	await get_tree().process_frame # Do not remove
+	
+	#if is_multiplayer_authority():
+		#print("Player ID: ", player_id, " has authority.")
+	#else:
+		#print("Player ID: ", player_id, " does not have authority.")
+	
+	snap_to_nearest_tile()
+	%lblPlayerName.text = name #set name to playerID
+	
+	
+	if is_multiplayer_authority():
+		UiEventBus.pass_texture_ref.connect(set_UI_texture_reference)
+		combatants.local_player = self
+		activate_camera()
+		set_attributes()
+		reveal_local_UI()
+	
+
+
 
 func _process(_delta) -> void:
 	var n = calculate_mouse_pos()
@@ -94,10 +91,12 @@ func _input(event: InputEvent) -> void:
 	if is_multiplayer_authority():
 		if turn and chat_inactive and movement:
 			input_move_direction(event)
-			
 			select_atk_target(event)
+			
 		if event.is_action_pressed("mouse_right_click") and targeting_active:
 			deactivate_targeting()
+		
+		camera_zoom(event)
 	
 	if event.is_action_pressed("ui_accept"): # Enter - Send message
 		world._on_send_pressed()
@@ -185,62 +184,16 @@ func execute_ability(ability: Abilities, target_pos: Vector2, target_enemy_path)
 			pass
 
 
-## ATTRIBUTES
-
-@rpc("any_peer", "call_local", "reliable")
-func gain_health(amount):
-	health += amount
-	if health > max_health:
-		health = max_health
-	%HealthBar.value = health
-	%HealthLbl.text = str(health, "/", max_health)
-
-@rpc("any_peer", "call_local", "reliable")
-func gain_armor(amount):
-	armor += amount
-	if armor > max_armor:
-		armor = max_armor
-	%ArmorBar.value = armor
-	%ArmorLbl.text = str(armor, "/", max_armor)
-
-@rpc("any_peer", "call_local", "reliable")
-func take_damage(amount):
-	if armor > 0:
-		var damage_to_armor = min(amount, armor)  # Reduce only the amount available in armor
-		armor -= damage_to_armor
-		amount -= damage_to_armor
-	
-	if amount > 0:
-		health -= amount
-	
-	if health <= 0:
-		health = 0
-		%DeathIcon.show()
-	%HealthBar.value = health
-	%HealthLbl.text = str(health, "/", max_health)
-	%ArmorBar.value = armor
-	%ArmorLbl.text = str(armor, "/", max_armor)
-
-
 ## MISC
-
-func turn_start():
-	turn = true
-	movement = 1
-	rolls = 1
-	MultiplayerManager.peer_print("TURN STARTEEEEEEEEEEEEEEEED")
 
 func find_enemy_on_tile(tile_pos: Vector2) -> Node:
 	var tile_pos_int: Vector2i = tile_pos.floor()  # Convert to Vector2i (rounds down to integer coordinates)
-	for enemy in enemies:
+	for enemy in enemies.get_children():
 		var enemy_tile_pos = tileMap_ground.local_to_map(enemy.global_position)  # Convert enemy position to tile position
 		if enemy_tile_pos == tile_pos_int:
 			return enemy  # Return the enemy if it's on the clicked tile
 	return null  # No enemy found on this tile
 
-func check_ranged_obstacles():
-	pass
-	
 
 func calculate_mouse_pos():
 	var mouse_pos = get_global_mouse_position()
@@ -249,12 +202,31 @@ func calculate_mouse_pos():
 	
 	return [mouse_pos, tile_pos]
 
-func snap_to_nearest_tile():
-	var closest_tile = tileMap_ground.local_to_map(global_position)
-	global_position = tileMap_ground.map_to_local(closest_tile)
+func set_attributes():
+	%HealthBar.max_value = max_health
+	%HealthBar.value = max_health
+	%HealthLbl.text = str(max_health, "/", max_health)
+	%ArmorBar.max_value = max_armor
+	%ArmorLbl.text = str(max_armor, "/", max_armor)
+
+func activate_camera():
+	camera.position = global_position
+	camera.enabled = true
 
 func reveal_local_UI():
 	$GUI_Local.show()
+
+func camera_zoom(event):
+	if event.is_action_pressed("zoom_in"):
+		camera.zoom += Vector2(0.1, 0.1)  # Zoom step
+		camera.zoom = camera.zoom.clamp(Vector2(0.75, 0.75), Vector2(1.5, 1.5))
+	
+	elif event.is_action_pressed("zoom_out"):
+		camera.zoom -= Vector2(0.1, 0.1)  # Zoom step
+		camera.zoom = camera.zoom.clamp(Vector2(0.75, 0.75), Vector2(1.5, 1.5))
+
+func set_UI_texture_reference(tex_reference):
+	UI_inititative_texture.append(tex_reference)
 
 func roll_dice(skill: Skill): 
 	if multiplayer.is_server():

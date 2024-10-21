@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddfk10qi5htsf"]
+
+[ext_resource type="Texture2D" uid="uid://cclh2jfs1qpgg" path="res://WorldScenes/Rest/TreasureChest/Gold.png" id="1_630um"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v5wx4"]
+size = Vector2(70, 70)
+
+[node name="TreasureChest" type="Area2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_630um")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_v5wx4")

@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://csvnqki1xoae8"]
+
+[ext_resource type="Texture2D" uid="uid://cbp1xx36oabh8" path="res://WorldScenes/Rest/ItemPile/ItemPile.png" id="1_nvhev"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v5wx4"]
+size = Vector2(70, 70)
+
+[node name="ItemPile" type="Area2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_nvhev")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_v5wx4")

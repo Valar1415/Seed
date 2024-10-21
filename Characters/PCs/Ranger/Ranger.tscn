@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dyekoyo1wi1wn"]
+[gd_scene load_steps=14 format=3 uid="uid://dyekoyo1wi1wn"]
 
 [ext_resource type="Script" path="res://Characters/PCs/Ranger/Ranger.gd" id="1_30svg"]
 [ext_resource type="Texture2D" uid="uid://dnxp837jin7xo" path="res://Characters/PCs/Ranger/Ranger.png" id="2_fi6hc"]
@@ -19,20 +19,6 @@ properties/2/path = NodePath(".:player_id")
 properties/2/spawn = true
 properties/2/replication_mode = 2
 properties/3/path = NodePath(".:initiative")
-properties/3/spawn = true
-properties/3/replication_mode = 2
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_l5tww"]
-properties/0/path = NodePath("GUI_Global/Attributes/HealthBar:value")
-properties/0/spawn = true
-properties/0/replication_mode = 2
-properties/1/path = NodePath("GUI_Global/Attributes/ArmorBar:value")
-properties/1/spawn = true
-properties/1/replication_mode = 2
-properties/2/path = NodePath("GUI_Global/Attributes/HealthBar/HealthLbl:text")
-properties/2/spawn = true
-properties/2/replication_mode = 2
-properties/3/path = NodePath("GUI_Global/Attributes/ArmorBar/ArmorLbl:text")
 properties/3/spawn = true
 properties/3/replication_mode = 2
 
@@ -71,14 +57,14 @@ corner_radius_bottom_left = 4
 z_index = 5
 collision_mask = 6
 script = ExtResource("1_30svg")
+movement = 1
+health = 50
+max_health = 50
 
 [node name="GeneralSync" type="MultiplayerSynchronizer" parent="."]
 replication_interval = 0.1
 delta_interval = 0.1
 replication_config = SubResource("SceneReplicationConfig_j5j14")
-
-[node name="UISync" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_l5tww")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_fi6hc")
@@ -93,7 +79,9 @@ collide_with_areas = true
 collide_with_bodies = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
+unique_name_in_owner = true
 top_level = true
+enabled = false
 script = ExtResource("3_gpdiw")
 
 [node name="TargetIcon" type="Sprite2D" parent="."]

@@ -97,7 +97,7 @@ func SendPlayerInformation(name, id, selected_class):
 
 @rpc("any_peer", "call_local")
 func StartGame():
-	var main_scene = load("res://world.tscn").instantiate()
+	var main_scene = load("res://WorldScenes/Combat/CombatScene.tscn").instantiate()
 	get_tree().root.add_child(main_scene)
 	self.hide()
 	
@@ -121,7 +121,7 @@ func _on_host_button_down():
 
 func _on_join_button_down():
 	peer = ENetMultiplayerPeer.new()
-	peer.create_client(hamachi_ip, port)
+	peer.create_client(address, port)
 	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
 	multiplayer.set_multiplayer_peer(peer)
 	

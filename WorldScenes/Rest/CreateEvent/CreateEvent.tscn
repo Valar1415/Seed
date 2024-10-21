@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://c0p8j5of6agkd"]
+
+[ext_resource type="Texture2D" uid="uid://db01i34nrf4u8" path="res://WorldScenes/Rest/CreateEvent/CreateEvent.png" id="1_srrdo"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v5wx4"]
+size = Vector2(70, 70)
+
+[node name="CreateEvent" type="Area2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_srrdo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_v5wx4")

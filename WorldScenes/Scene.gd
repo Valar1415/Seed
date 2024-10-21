@@ -13,6 +13,14 @@ extends Node2D
 
 
 func _ready(): # Multiplayer Spawn & Authority?
+	spawn_players()
+	#if first time:
+		#spawn_players()
+	#else:
+		#place_players()
+	
+
+func spawn_players():
 	var index = 0
 	for i in GameManager.Players:
 		# Match player class
@@ -35,9 +43,9 @@ func _ready(): # Multiplayer Spawn & Authority?
 			if spawn.name == str(index):
 				currentPlayer.global_position = spawn.global_position
 		index += 1
-	
-	
 
+func place_players():
+	pass
 
 
 func _on_send_pressed() -> void:

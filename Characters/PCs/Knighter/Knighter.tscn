@@ -57,6 +57,10 @@ corner_radius_bottom_left = 4
 z_index = 5
 collision_mask = 6
 script = ExtResource("1_e5ccn")
+initiative = "1d2"
+movement = 1
+health = 188
+max_health = 188
 
 [node name="GeneralSync" type="MultiplayerSynchronizer" parent="."]
 replication_interval = 0.1
@@ -76,7 +80,9 @@ collide_with_areas = true
 collide_with_bodies = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
+unique_name_in_owner = true
 top_level = true
+enabled = false
 script = ExtResource("3_au01q")
 
 [node name="TargetIcon" type="Sprite2D" parent="."]
@@ -222,6 +228,7 @@ text = "name"
 horizontal_alignment = 1
 
 [node name="Highlighter" type="ReferenceRect" parent="GUI_Global"]
+unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 1

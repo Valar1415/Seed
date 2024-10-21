@@ -47,7 +47,7 @@ func add_initiative_bar(order) -> void:
 
 
 @rpc("any_peer", "call_local", "reliable")
-func sort_initiative_bar(character):
+func sort_initiative_bar(_character):
 	if get_child_count() > 0:
 		var first_child = get_child(0)
 		var second_child = get_child(1)
@@ -84,7 +84,7 @@ func emit_character_death(character):
 #region get functions
 # Helper function to get the character sprite (finds it from enemies/allies)
 func get_character_sprite(char_name: String) -> Sprite2D:
-	var combatants = get_tree().root.get_node("World/Combatants")
+	var combatants = get_tree().root.get_node("CombatScene/Combatants")
 	var character = combatants.find_child(char_name, true, false)
 	
 	if character and character.has_node("Sprite2D"):
@@ -94,8 +94,8 @@ func get_character_sprite(char_name: String) -> Sprite2D:
 
 # Helper function to get the character reference
 func get_character_ref(char_name: String) -> Node:
-	var allies = get_tree().root.get_node("World/Combatants/Allies").get_children()
-	var enemies = get_tree().root.get_node("World/Combatants/Enemies").get_children()
+	var allies = get_tree().root.get_node("CombatScene/Combatants/Allies").get_children()
+	var enemies = get_tree().root.get_node("CombatScene/Combatants/Enemies").get_children()
 	var characters = enemies + allies
 	for character in characters:
 		if character.name == char_name:

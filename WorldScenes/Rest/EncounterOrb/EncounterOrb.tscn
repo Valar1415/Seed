@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://bwi03s0ftme3q"]
+
+[ext_resource type="Texture2D" uid="uid://ciaihsv350ao2" path="res://WorldScenes/Rest/EncounterOrb/EncounterOrb.png" id="1_054q0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v5wx4"]
+size = Vector2(70, 70)
+
+[node name="EncounterOrb" type="Area2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_054q0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_v5wx4")

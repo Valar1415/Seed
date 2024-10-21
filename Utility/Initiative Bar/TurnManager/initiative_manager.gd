@@ -14,6 +14,7 @@ func _ready() -> void:
 		emit_inititative_order()
 	
 
+#region Initiative order
 func emit_inititative_order():
 	await get_tree().create_timer(1).timeout
 	enemies = $"../Combatants/Enemies".get_children()
@@ -41,6 +42,23 @@ func emit_inititative_order():
 	#var turn_owner_name = initiative_order[turnInit]["name"]
 	start_first_turn.rpc()
 	
+
+@rpc("any_peer", "call_local", "reliable")
+func broadcast_initative_order(order):
+	initiative_order = order
+	for character in initiative_order:
+		character["node"] = find_combatant_by_name(character["name"])
+
+func remove_from_initiative(character):
+	for i in range(initiative_order.size()):
+		if initiative_order[i]["node"] == character:
+			initiative_order.remove_at(i)
+			UiEventBus.character_death.emit(character)
+			
+			return
+	
+	print("Character not found in initiative order")
+#endregion
 
 func get_current_turn_owner() -> Object:
 	var turn_owner_name = initiative_order[turnInit]["name"]
@@ -70,6 +88,7 @@ func end_turn() -> void:
 	elif !turn_owner.is_in_group("player"): # Enemy turn
 		if multiplayer.is_server():
 			owner_turn_start(turn_owner)
+			turn_owner.act()
 			UiEventBus.turn_end.emit(turn_owner)
 	
 
@@ -81,8 +100,14 @@ func owner_turn_start(turn_owner):
 
 @rpc("any_peer", "call_local", "reliable")
 func start_first_turn():
+	var turn_owner = get_current_turn_owner()
+	
 	if is_local_player_turn_owner():
-		owner_turn_start(get_current_turn_owner())
+		owner_turn_start(turn_owner)
+	elif !turn_owner.is_in_group("player"): # Enemy turn
+		if multiplayer.is_server():
+			owner_turn_start(turn_owner)
+			turn_owner.act()
 	#MultiplayerManager.peer_print(get_current_turn_owner())
 	
 
@@ -92,17 +117,13 @@ func update_ui() -> void: # Button
 
 
 func find_combatant_by_name(char_name: String) -> Node:
-	var characters_root = get_tree().root.get_node("World/Combatants")
+	var characters_root = get_tree().root.get_node("CombatScene/Combatants")
 	return characters_root.find_child(char_name, true, false)
 
 func _on_end_turn_pressed() -> void: # Called on button press & enemy.act()
 	end_turn.rpc()
 
-@rpc("any_peer", "call_local", "reliable")
-func broadcast_initative_order(order):
-	initiative_order = order
-	for character in initiative_order:
-		character["node"] = find_combatant_by_name(character["name"])
+
 
 @rpc("any_peer", "call_local", "reliable")
 func connect_NPC_signals():

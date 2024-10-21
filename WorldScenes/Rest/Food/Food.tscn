@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://x42oh0r38dcc"]
+
+[ext_resource type="Texture2D" uid="uid://cmiavuu00rvd5" path="res://WorldScenes/Rest/Food/Food.png" id="1_yv4id"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v5wx4"]
+size = Vector2(70, 70)
+
+[node name="Food" type="Area2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_yv4id")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_v5wx4")
