@@ -11,7 +11,6 @@
 [ext_resource type="PackedScene" uid="uid://bwi03s0ftme3q" path="res://WorldScenes/Rest/EncounterOrb/EncounterOrb.tscn" id="9_lnd6x"]
 
 [node name="RestScene" type="Node2D"]
-visible = false
 script = ExtResource("1_81l4f")
 
 [node name="TileMap" type="Node2D" parent="."]

@@ -44,8 +44,6 @@ script = ExtResource("7_2tiwg")
 [node name="Enemies" type="Node2D" parent="Combatants"]
 
 [node name="Wolf" parent="Combatants/Enemies" instance=ExtResource("8_gkmt3")]
-position = Vector2(400, 116)
-base_movement = 2
 
 [node name="Allies" type="Node2D" parent="Combatants"]
 

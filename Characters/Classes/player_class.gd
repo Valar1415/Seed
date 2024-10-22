@@ -38,6 +38,7 @@ var targeting_active: bool = false
 #@export var dice_result2: int = 0
 
 func _ready() -> void:
+	print(Game.get_game_state_name())
 	await get_tree().process_frame # Do not remove
 	
 	#if is_multiplayer_authority():
@@ -51,10 +52,11 @@ func _ready() -> void:
 	
 	if is_multiplayer_authority():
 		UiEventBus.pass_texture_ref.connect(set_UI_texture_reference)
-		combatants.local_player = self
 		activate_camera()
 		set_attributes()
 		reveal_local_UI()
+		if Game.get_game_state_name() == "COMBAT":
+			combatants.local_player = self # Later we must move this to enter tree or smth
 	
 
 
@@ -202,12 +204,6 @@ func calculate_mouse_pos():
 	
 	return [mouse_pos, tile_pos]
 
-func set_attributes():
-	%HealthBar.max_value = max_health
-	%HealthBar.value = max_health
-	%HealthLbl.text = str(max_health, "/", max_health)
-	%ArmorBar.max_value = max_armor
-	%ArmorLbl.text = str(max_armor, "/", max_armor)
 
 func activate_camera():
 	camera.position = global_position
@@ -226,7 +222,8 @@ func camera_zoom(event):
 		camera.zoom = camera.zoom.clamp(Vector2(0.75, 0.75), Vector2(1.5, 1.5))
 
 func set_UI_texture_reference(tex_reference):
-	UI_inititative_texture.append(tex_reference)
+	UI_inititative_texture_array.append(tex_reference)
+
 
 func roll_dice(skill: Skill): 
 	if multiplayer.is_server():

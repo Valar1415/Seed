@@ -21,6 +21,7 @@ DiceRoll="*res://Utility/DiceRoll/DiceRoll.gd"
 UiEventBus="*res://Utility/Event Buses/UI_Event_Bus.gd"
 GameManager="*res://Utility/Multiplayer Management/game_manager.gd"
 MultiplayerManager="*res://Utility/Multiplayer Management/MultiplayerManager.gd"
+Game="*res://Utility/Game Management/GameState.gd"
 
 [display]
 

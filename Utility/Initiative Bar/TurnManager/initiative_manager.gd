@@ -117,8 +117,8 @@ func update_ui() -> void: # Button
 
 
 func find_combatant_by_name(char_name: String) -> Node:
-	var characters_root = get_tree().root.get_node("CombatScene/Combatants")
-	return characters_root.find_child(char_name, true, false)
+	#var characters_root = get_tree().root.get_node("CombatScene/Combatants")
+	return self.find_child(char_name, true, false)
 
 func _on_end_turn_pressed() -> void: # Called on button press & enemy.act()
 	end_turn.rpc()

@@ -12,6 +12,7 @@ class_name Entity
 @onready var tileMap_ground: TileMapLayer = $"../../../TileMap/Ground"
 #endregion
 
+
 #region ATTRIBUTES
 @export var base_movement := 1
 @export var base_rolls := 1
@@ -20,12 +21,14 @@ class_name Entity
 	get: return movement
 	set(value):
 		movement = value
-		update_UI("Movement", value)
+		if self.is_in_group("player"):
+			%Movement.text = str("Movement: ", value)
 @export var rolls: int = 1:
 	get: return rolls
 	set(value):
 		rolls = value
-		update_UI("Rolls", value)
+		if self.is_in_group("player"):
+			%Rolls.text = str("Rolls: ", value)
 @export var health: int= 24
 @export var max_health: int= 24
 @export var armor: int = 0
@@ -82,11 +85,14 @@ func take_damage(amount):
 	%ArmorBar.value = armor
 	%ArmorLbl.text = str(armor, "/", max_armor)
 
-@rpc("any_peer", "call_local", "reliable")
-func die():
-	%DeathIcon.show()
-	current_state = States.CORPSE
-	combatants.remove_from_initiative(self)
+func set_attributes():
+	%HealthBar.max_value = max_health
+	%HealthBar.value = max_health
+	%HealthLbl.text = str(max_health, "/", max_health)
+	%ArmorBar.max_value = max_armor
+	%ArmorLbl.text = str(max_armor, "/", max_armor)
+	movement = base_movement
+	rolls = base_rolls
 #endregion
 
 
@@ -95,34 +101,39 @@ func snap_to_nearest_tile():
 	var closest_tile = tileMap_ground.local_to_map(global_position)
 	global_position = tileMap_ground.map_to_local(closest_tile)
 
-func update_UI(type_name: String, value):
-	if type_name == "Movement":
-		if has_node("%Movement") and %Movement != null:
-			%Movement.text = str("Movement: ", value)
-	elif type_name == "Rolls":
-		if has_node("%Rolls") and %Rolls != null:
-			%Rolls.text = str("Rolls: ", value)
-	
+
+@rpc("any_peer", "call_local", "reliable")
+func die():
+	%DeathIcon.show()
+	current_state = States.CORPSE
+	combatants.remove_from_initiative(self)
 #endregion
 
 #region GUI
-var UI_inititative_texture: Array
-var reference
+# Spaghetti code
+@onready var IntBar: VBoxContainer = $"../../../GUI/InitiativeBar/PanelContainer/ScrollContainer/IntBar"
+var UI_inititative_texture_array: Array
+var char_reference
+var texture_reference
 
 func _mouse_enter() -> void:
 	match_reference()
-	UI_inititative_texture[reference].show_highlighter()
+	texture_reference.show_highlighter()
 	show_highlighter()
+	display_enemy_info()
 
 func _mouse_exit() -> void:
-	UI_inititative_texture[reference].hide_highlighter()
+	texture_reference.hide_highlighter()
 	hide_highlighter()
+	hide_enemy_info()
 
 func match_reference():
-	for index in range(UI_inititative_texture.size()):
-		var TextRect = UI_inititative_texture[index]
-		if TextRect.character_reference == self:
-			reference = index  # Store the index
+	var reference_str
+	for i in UI_inititative_texture_array.size():
+		var TextRect = UI_inititative_texture_array[i]
+		if TextRect == self.name:
+			texture_reference = find_TexRect_by_name(TextRect)
+			char_reference = find_combatant_by_name(TextRect)
 			return
 
 func show_highlighter():
@@ -130,4 +141,18 @@ func show_highlighter():
 
 func hide_highlighter():
 	%Highlighter.hide()
+
+func display_enemy_info():
+	pass
+
+func hide_enemy_info():
+	pass
+#endregion
+
+#region HELPER FUNCTIONS
+func find_combatant_by_name(char_name: String) -> Node:
+	return combatants.find_child(char_name, true, false)
+
+func find_TexRect_by_name(ref_name: String) -> Node:
+	return IntBar.find_child(ref_name, true, false)
 #endregion

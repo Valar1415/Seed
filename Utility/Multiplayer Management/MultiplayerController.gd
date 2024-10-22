@@ -97,7 +97,7 @@ func SendPlayerInformation(name, id, selected_class):
 
 @rpc("any_peer", "call_local")
 func StartGame():
-	var main_scene = load("res://WorldScenes/Combat/CombatScene.tscn").instantiate()
+	var main_scene = load("res://WorldScenes/Rest/RestScene.tscn").instantiate()
 	get_tree().root.add_child(main_scene)
 	self.hide()
 	

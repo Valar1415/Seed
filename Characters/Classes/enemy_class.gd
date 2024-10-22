@@ -6,6 +6,7 @@ signal turn_end
 
 ## GET NODES
 @onready var range: Area2D = $Range
+@onready var enemy_information: PanelContainer = $GUI/EnemyInformation
 
 ## ATTACK
 var atk_targets: Array = []
@@ -18,6 +19,9 @@ func _ready():
 	UiEventBus.pass_texture_ref.connect(set_UI_texture_reference)
 	snap_to_nearest_tile()
 	set_tilemap_obstacle(true)
+	set_attributes()
+	emit_UI_info()
+
 
 #func _unhandled_input(event: InputEvent) -> void: # DEBUG
 	#if event.is_action_pressed("DEBUG_K"):
@@ -194,7 +198,16 @@ func set_tilemap_obstacle(value):
 	astar.set_point_solid(current_position, value)
 
 func set_UI_texture_reference(tex_reference):
-	UI_inititative_texture.append(tex_reference)
+	UI_inititative_texture_array.append(tex_reference)
+
+func emit_UI_info():
+	UiEventBus.set_enemy_info.emit(movement, rolls)
+
+func display_enemy_info():
+	enemy_information.show()
+
+func hide_enemy_info():
+	enemy_information.hide()
 
 func roll_dice(skill: Skill): 
 	if multiplayer.is_server():
